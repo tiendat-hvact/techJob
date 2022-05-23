@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - TechJobs</title>
+  <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+
+  <!-- Roboto Fonts -->
+  <link
+      href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i,900,900i&display=swap"
+      rel="stylesheet">
+  <link
+      href="https://fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,400,400i,700,700i&display=swap"
+      rel="stylesheet">
+
+
+  <!-- bootstrap css -->
+  <link href="/static/bootstrap.min.css" rel="stylesheet" type="text/css">
+
+  <!-- main css -->
+  <link href="/static/style.css" rel="stylesheet" type="text/css">
+
+  <!-- Font Awesome -->
+  <link crossorigin="anonymous"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css"
+        integrity="sha256-NuCn4IvuZXdBaFKJOAcsU2Q3ZpwbdFisd5dux4jkQ5w=" rel="stylesheet"/>
+
+</head>
+<body>
+<div class="container-fluid login-fluid clear-left clear-right">
+  <div class="login-container">
+    <!-- login header -->
+    <div class="login-header">
+      <div class="w-login m-auto">
+        <div class="login-logo">
+          <h3>
+            <!-- <a href="#">Tech<span class="txb-logo">Jobs.</span></a> -->
+            <a href="/">
+              <img
+                  alt="TechJobs"
+                  src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1652922117/system/Logo_01.png">
+            </a>
+          </h3>
+          <span class="login-breadcrumb"><em>/</em> Đăng Nhập</span>
+        </div>
+        <div class="login-right">
+          <a class="btn btn-return" href="/">Trang chủ</a>
+        </div>
+      </div>
+    </div>
+    <!-- (end) login header -->
+
+    <div class="clearfix"></div>
+
+    <div class="padding-top-90"></div>
+
+    <!-- login main -->
+    <div class="login-main">
+      <div class="w-login m-auto">
+        <div class="row">
+          <!-- login main descriptions -->
+          <div class="col-md-6 col-sm-12 col-12 login-main-left">
+            <img
+                src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653111963/system/banner-login.png">
+          </div>
+          <!-- login main form -->
+          <div class="col-md-6 col-sm-12 col-12 login-main-right">
+
+            <form class="login-form" method="post" th:action="@{/techJob/login-account}"
+                  th:object="${user}">
+              <div class="login-main-header">
+                <h3>Đăng Nhập</h3>
+              </div>
+              <div class="input-div one">
+                <div class="div lg-lable">
+                  <h5>Email</h5>
+                  <input class="input form-control-lgin" th:field="*{email}" type="text">
+                </div>
+              </div>
+              <div class="input-div pass">
+                <div class="div lg-lable">
+                  <h5>Password</h5>
+                  <input class="input form-control-lgin" th:field="*{password}" type="password">
+                </div>
+              </div>
+              <div class="form-group d-block frm-text">
+                <a class="fg-login d-inline-block" href="#">Quên mật khẩu</a>
+                <a class="fg-login float-right d-inline-block" href="/techJob/user-register">
+                  Bạn chưa có tài khoản? Đăng ký</a>
+              </div>
+              <button class="btn btn-primary float-right btn-login d-block w-100" type="submit">
+                Đăng Nhập
+              </button>
+              <div class="form-group d-block w-100 mt-5">
+                <div class="text-or text-center">
+                  <span>Hoặc</span>
+                </div>
+
+                <div class="row">
+                  <div class="col-sm-6 col-12 pr-7">
+                    <button class="btn btn-secondary btn-login-facebook btnw w-100 float-left">
+                      <i aria-hidden="true" class="fa fa-facebook"></i>
+                      <span>Đăng nhập bằng Facebook</span>
+                    </button>
+                  </div>
+                  <div class="col-sm-6 col-12 pl-7">
+                    <button class="btn btn-secondary btn-login-google btnw w-100 float-left">
+                      <i aria-hidden="true" class="fa fa-google"></i>
+                      <span>Đăng nhập bằng Google</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- (end) login main -->
+  </div>
+
+  <!-- notification -->
+  <div id="notification" th:if="${notification.text != null }" th:object="${notification}">
+    <div id="contentNotification">
+      <div id="headerNotification">
+        <h4 style="margin: 0; color: red">THÔNG BÁO</h4>
+        <a class="btn"><i class="fa fa-window-close"></i> Đóng lại</a>
+      </div>
+      <hr id="lineNotification">
+      <p th:utext="${notification.text}"></p>
+    </div>
+  </div>
+
+</div>
+<footer class="login-footer">
+  <div class="w-login m-auto">
+    <div class="row">
+      <!-- login footer left -->
+      <div class="col-md-6 col-sm-12 col-12 login-footer-left">
+        <div class="login-copyright">
+          <p>Copyright © 2020 <a href="/"> TechJobs</a>. All Rights Reserved.</p>
+        </div>
+      </div>
+      <!-- login footer right -->
+      <div class="col-md-6 col-sm-12 col-12 login-footer-right">
+        <ul>
+          <li><a onclick="onClickCondition()">Terms & Conditions</a></li>
+          <li><a onclick="onClickPolicy()">Privacy Policy</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</footer>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="/js/jquery-3.4.1.slim.min.js"></script>
+<script src="/js/popper.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+
+<script src="/js/main.js" type="text/javascript"></script>
+
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script th:inline="javascript">
+
+  const type = [[${type}]];
+  const accountId = [[${accountId}]];
+  const verify = [[${verify}]];
+
+  if (verify == "false") {
+    Swal.fire({
+      title: 'Nhập mã xác thực tài khoản',
+      input: 'text',
+      inputAttributes: {
+        autocapitalize: 'off'
+      },
+      showCancelButton: true,
+      cancelButtonText: 'Đóng',
+      confirmButtonText: 'xác nhận',
+      showLoaderOnConfirm: true,
+      preConfirm: (verifyCode) => {
+        return window.location = '/techJob/check-verifyCode/' + type + "/" + accountId
+            + '?verifyCode=' + verifyCode;
+      },
+    })
+  }
+
+  $("#notification").click(function () {
+    $("#notification").hide();
+  });
+
+  function onClickCondition() {
+    Swal.fire({
+      title: 'Terms & Conditions',
+      text: 'Demo',
+      showConfirmButton: false
+    })
+  }
+
+  function onClickPolicy() {
+    Swal.fire({
+      title: 'Privacy Policy',
+      text: 'Demo',
+      showConfirmButton: false
+    })
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,168 @@
+package com.example.techjobs.service.impl;
+
+import com.cloudinary.Cloudinary;
+import com.cloudinary.Transformation;
+import com.cloudinary.utils.ObjectUtils;
+import com.example.techjobs.common.encryptor.AttributeEncryptor;
+import com.example.techjobs.common.enums.ImgConstant;
+import com.example.techjobs.common.enums.StateConstant;
+import com.example.techjobs.common.mapper.GenericMapper;
+import com.example.techjobs.common.util.Utils;
+import com.example.techjobs.dto.LoginRequest;
+import com.example.techjobs.dto.inputDTO.InputCompanyDTO;
+import com.example.techjobs.dto.outputDTO.OutputCompanyDTO;
+import com.example.techjobs.entity.Company;
+import com.example.techjobs.repository.CompanyRepository;
+import com.example.techjobs.service.CompanyService;
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
+import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+public class CompanyServiceImpl implements CompanyService {
+
+  private final Cloudinary cloudinary;
+  private final GenericMapper genericMapper;
+  private final EmailServiceImpl emailService;
+  private final CompanyRepository companyRepository;
+  private final AttributeEncryptor attributeEncryptor;
+
+  @Autowired
+  public CompanyServiceImpl(
+      Cloudinary cloudinary,
+      GenericMapper genericMapper,
+      EmailServiceImpl emailService,
+      CompanyRepository companyRepository,
+      AttributeEncryptor attributeEncryptor) {
+    this.cloudinary = cloudinary;
+    this.genericMapper = genericMapper;
+    this.emailService = emailService;
+    this.companyRepository = companyRepository;
+    this.attributeEncryptor = attributeEncryptor;
+  }
+
+  @Override
+  public OutputCompanyDTO findById(Integer userId) {
+    Company company =
+        companyRepository.findByIdAndStateNot(userId, StateConstant.DELETED.name()).orElse(null);
+    if (company != null) {
+      company.setPassword(attributeEncryptor.convertToEntityAttribute(company.getPassword()));
+    }
+    return genericMapper.mapToType(company, OutputCompanyDTO.class);
+  }
+
+  @Override
+  public Map<String, Object> loginAccount(LoginRequest data) {
+    Map<String, Object> result = null;
+    Company company =
+        companyRepository
+            .findByEmailAndStateNot(data.getEmail(), StateConstant.DELETED.getValue())
+            .orElse(null);
+    if (company != null) {
+      if (attributeEncryptor.matches(data.getPassword(), company.getPassword())) {
+        result = new HashMap<>();
+        result.put("accountId", company.getId());
+        if (company.getState().equals(StateConstant.WAIT.name())) {
+          result.put("verify", false);
+        } else {
+          result.put("verify", true);
+        }
+      }
+    }
+    return result;
+  }
+
+  @Override
+  public Boolean checkVerifyCode(Integer accountId, String verifyCode) {
+    Company company =
+        companyRepository
+            .findByIdAndStateNot(accountId, StateConstant.DELETED.getValue())
+            .orElse(null);
+    if (company != null && attributeEncryptor.matches(verifyCode, company.getVerifyCode())) {
+      company.setState(StateConstant.ACTIVE.name());
+      company.setUpdateDate(LocalDate.now());
+      companyRepository.save(company);
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  @Transactional
+  @SneakyThrows
+  public boolean createCompany(InputCompanyDTO data) {
+    Company company =
+        companyRepository
+            .findByEmailAndStateNot(data.getEmail(), StateConstant.DELETED.name())
+            .orElse(null);
+    if (company == null) {
+      String verifyCode = Utils.createVerifyCode();
+      company = genericMapper.mapToType(data, Company.class);
+      if (data.getFile() == null || data.getFile().isEmpty()) {
+        company.setAvatar(ImgConstant.UnknownUser.getValue());
+      } else {
+        String name = Utils.formatFileName(data.getEmail()) + "_" + System.currentTimeMillis();
+        Transformation incoming =
+            new Transformation<>()
+                .gravity("face")
+                .height(500)
+                .width(500)
+                .crop("crop")
+                .chain()
+                .radius("max")
+                .chain()
+                .width(100)
+                .crop("scale");
+        this.cloudinary
+            .uploader()
+            .upload(
+                data.getFile().getBytes(),
+                ObjectUtils.asMap(
+                    "resource_type",
+                    "auto",
+                    "public_id",
+                    "company/" + name,
+                    "transformation",
+                    incoming));
+        company.setAvatar(ImgConstant.Prefix.getValue() + "company/" + name);
+      }
+      company.setPassword(attributeEncryptor.convertToDatabaseColumn(data.getPassword()));
+      company.setVerifyCode(attributeEncryptor.convertToDatabaseColumn(verifyCode));
+      company.setState(StateConstant.WAIT.name());
+      company.setCreateBy("unknow");
+      company.setCreateDate(LocalDate.now());
+      company.setUpdateBy("unknow");
+      company.setUpdateDate(LocalDate.now());
+      emailService.sendEmailVerifyCode(data.getEmail(), verifyCode);
+      companyRepository.save(company);
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  @Transactional
+  public boolean updateCompany(int companyId, InputCompanyDTO data) {
+    Company company =
+        companyRepository
+            .findByEmailAndStateNot(data.getEmail(), StateConstant.DELETED.name())
+            .orElse(null);
+    if (company == null) {
+      company =
+          companyRepository
+              .findByIdAndStateNot(companyId, StateConstant.DELETED.name())
+              .orElse(null);
+      if (company != null) {
+        genericMapper.copyNonNullProperties(data, company);
+        companyRepository.save(company);
+        return true;
+      }
+      return false;
+    }
+    return false;
+  }
+}
