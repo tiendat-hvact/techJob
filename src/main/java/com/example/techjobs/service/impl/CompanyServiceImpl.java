@@ -4,6 +4,7 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.Transformation;
 import com.cloudinary.utils.ObjectUtils;
 import com.example.techjobs.common.encryptor.AttributeEncryptor;
+import com.example.techjobs.common.enums.CityConstant;
 import com.example.techjobs.common.enums.ImgConstant;
 import com.example.techjobs.common.enums.StateConstant;
 import com.example.techjobs.common.mapper.GenericMapper;
@@ -50,7 +51,7 @@ public class CompanyServiceImpl implements CompanyService {
     Company company =
         companyRepository.findByIdAndStateNot(userId, StateConstant.DELETED.name()).orElse(null);
     if (company != null) {
-      company.setPassword(attributeEncryptor.convertToEntityAttribute(company.getPassword()));
+      company.setCity(CityConstant.getEnumKeyForValue(company.getCity()));
     }
     return genericMapper.mapToType(company, OutputCompanyDTO.class);
   }
@@ -60,7 +61,7 @@ public class CompanyServiceImpl implements CompanyService {
     Map<String, Object> result = null;
     Company company =
         companyRepository
-            .findByEmailAndStateNot(data.getEmail(), StateConstant.DELETED.getValue())
+            .findByEmailAndStateNot(data.getEmail(), StateConstant.DELETED.name())
             .orElse(null);
     if (company != null) {
       if (attributeEncryptor.matches(data.getPassword(), company.getPassword())) {
@@ -79,9 +80,7 @@ public class CompanyServiceImpl implements CompanyService {
   @Override
   public Boolean checkVerifyCode(Integer accountId, String verifyCode) {
     Company company =
-        companyRepository
-            .findByIdAndStateNot(accountId, StateConstant.DELETED.getValue())
-            .orElse(null);
+        companyRepository.findByIdAndStateNot(accountId, StateConstant.DELETED.name()).orElse(null);
     if (company != null && attributeEncryptor.matches(verifyCode, company.getVerifyCode())) {
       company.setState(StateConstant.ACTIVE.name());
       company.setUpdateDate(LocalDate.now());
@@ -102,10 +101,36 @@ public class CompanyServiceImpl implements CompanyService {
     if (company == null) {
       String verifyCode = Utils.createVerifyCode();
       company = genericMapper.mapToType(data, Company.class);
-      if (data.getFile() == null || data.getFile().isEmpty()) {
-        company.setAvatar(ImgConstant.UnknownUser.getValue());
-      } else {
-        String name = Utils.formatFileName(data.getEmail()) + "_" + System.currentTimeMillis();
+      company.setAvatar(ImgConstant.UnknownCompany.getValue());
+      company.setPassword(attributeEncryptor.convertToDatabaseColumn(data.getPassword()));
+      company.setVerifyCode(attributeEncryptor.convertToDatabaseColumn(verifyCode));
+      company.setState(StateConstant.WAIT.name());
+      company.setCreateBy("unknow");
+      company.setCreateDate(LocalDate.now());
+      company.setUpdateBy("unknow");
+      company.setUpdateDate(LocalDate.now());
+      emailService.sendEmailVerifyCode(data.getEmail(), verifyCode);
+      companyRepository.save(company);
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  @Transactional
+  @SneakyThrows
+  public boolean updateCompany(int companyId, InputCompanyDTO data) {
+    Company companyDuplicatedEmail =
+        companyRepository
+            .findByIdNotAndEmailAndStateNot(
+                companyId, data.getEmail(), StateConstant.DELETED.name())
+            .orElse(null);
+    Company company =
+        companyRepository.findByIdAndStateNot(companyId, StateConstant.DELETED.name()).orElse(null);
+    if (companyDuplicatedEmail == null && company != null) {
+      genericMapper.copyNonNullProperties(data, company);
+      String name = Utils.formatFileName(company.getEmail()) + "_" + System.currentTimeMillis();
+      if (data.getFile() != null && !data.getFile().isEmpty()) {
         Transformation incoming =
             new Transformation<>()
                 .gravity("face")
@@ -130,38 +155,10 @@ public class CompanyServiceImpl implements CompanyService {
                     incoming));
         company.setAvatar(ImgConstant.Prefix.getValue() + "company/" + name);
       }
-      company.setPassword(attributeEncryptor.convertToDatabaseColumn(data.getPassword()));
-      company.setVerifyCode(attributeEncryptor.convertToDatabaseColumn(verifyCode));
-      company.setState(StateConstant.WAIT.name());
-      company.setCreateBy("unknow");
-      company.setCreateDate(LocalDate.now());
-      company.setUpdateBy("unknow");
+      company.setCity(CityConstant.valueOf(company.getCity()).getValue());
       company.setUpdateDate(LocalDate.now());
-      emailService.sendEmailVerifyCode(data.getEmail(), verifyCode);
       companyRepository.save(company);
       return true;
-    }
-    return false;
-  }
-
-  @Override
-  @Transactional
-  public boolean updateCompany(int companyId, InputCompanyDTO data) {
-    Company company =
-        companyRepository
-            .findByEmailAndStateNot(data.getEmail(), StateConstant.DELETED.name())
-            .orElse(null);
-    if (company == null) {
-      company =
-          companyRepository
-              .findByIdAndStateNot(companyId, StateConstant.DELETED.name())
-              .orElse(null);
-      if (company != null) {
-        genericMapper.copyNonNullProperties(data, company);
-        companyRepository.save(company);
-        return true;
-      }
-      return false;
     }
     return false;
   }

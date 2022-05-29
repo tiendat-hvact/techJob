@@ -38,7 +38,7 @@ public class EmailServiceImpl implements EmailService {
             + "  <p>Kính gửi chủ tài khoản <span style=\"color: red; font-weight: bold\">"
             + email
             + "</span></p>\n"
-            + "  <p>Hôm nay bạn đã đăng ký tài khoản trong hệ thống TopCV của chúng tôi !</p>\n"
+            + "  <p>Hôm nay bạn đã đăng ký tài khoản trong hệ thống TechJobs của chúng tôi !</p>\n"
             + "  <p>Mã xác thực tài khoản của bạn là <span style=\"color: red; font-weight: bold\">"
             + verifyCode
             + "</span></p>\n"

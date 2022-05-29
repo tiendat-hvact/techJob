@@ -26,6 +26,7 @@ public class GenericMapper {
 
   // map cả null sang
   public <T, E> E mapToType(T source, Class<E> typeDestination) {
+    modelMapper.getConfiguration().setAmbiguityIgnored(true);
     if (source == null) {
       return null;
     }
@@ -45,6 +46,7 @@ public class GenericMapper {
   }
 
   public <S, T> List<T> mapToListOfType(List<S> source, Class<T> targetClass) {
+    modelMapper.getConfiguration().setAmbiguityIgnored(true);
     if (source == null || source.isEmpty()) {
       return null;
     }

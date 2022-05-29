@@ -4,9 +4,12 @@ import com.example.techjobs.dto.LoginRequest;
 import com.example.techjobs.dto.NotificationRequest;
 import com.example.techjobs.dto.inputDTO.InputCompanyDTO;
 import com.example.techjobs.dto.inputDTO.InputUserDTO;
+import com.example.techjobs.dto.outputDTO.OutputJobDTO;
 import com.example.techjobs.service.CompanyService;
+import com.example.techjobs.service.JobService;
 import com.example.techjobs.service.UserService;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -23,14 +26,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/techJob")
 public class CommonController {
-
-  private final UserService userService;
+  
   private final CompanyService companyService;
-
+  private final UserService userService;
+  private final JobService jobService;
+  
   @Autowired
-  public CommonController(UserService userService, CompanyService companyService) {
-    this.userService = userService;
+  public CommonController(CompanyService companyService,
+      UserService userService, JobService jobService) {
     this.companyService = companyService;
+    this.userService = userService;
+    this.jobService = jobService;
+  }
+
+  @GetMapping
+  public String getHome(Model model) {
+    return "home";
   }
 
   @GetMapping("/login")
@@ -70,7 +81,7 @@ public class CommonController {
           break;
       }
     }
-    model.addAttribute("user", new LoginRequest());
+    model.addAttribute("account", new LoginRequest());
     model.addAttribute("notification", notification);
     model.addAttribute("accountId", accountId);
     model.addAttribute("verify", verify);
@@ -79,44 +90,28 @@ public class CommonController {
 
   @PostMapping("/login-account")
   public String loginAccount(
-      HttpServletResponse response, @ModelAttribute(name = "user") LoginRequest user) {
-    String type;
+      HttpServletResponse response, @ModelAttribute(name = "user") LoginRequest account) {
     int accountId;
     Boolean verify;
-    Map<String, Object> resultLogin = userService.loginAccount(user);
+    String type = account.getType();
+    Map<String, Object> resultLogin = new HashMap<>();
+    if (type.equals("user")) {
+      resultLogin = userService.loginAccount(account);
+    } else if (type.equals("company")) {
+      resultLogin = companyService.loginAccount(account);
+    }
     if (resultLogin != null && !resultLogin.isEmpty()) {
-      type = "user";
       accountId = (Integer) resultLogin.get("accountId");
       verify = (Boolean) resultLogin.get("verify");
       if (verify) {
-        Cookie cookie = new Cookie("userId", String.valueOf(accountId));
+        Cookie cookie = new Cookie(type, String.valueOf(accountId));
         cookie.setMaxAge(24 * 60 * 60);
-        cookie.setPath("/user");
+        cookie.setPath("/techJob");
         cookie.setHttpOnly(true);
         response.addCookie(cookie);
-        return "redirect:/user";
+        return "redirect:/techJob/user";
       } else {
         return "redirect:/techJob/login?accountId=" + accountId + "&type=" + type + "&verify=false";
-      }
-    } else {
-      resultLogin = companyService.loginAccount(user);
-      if (resultLogin != null && !resultLogin.isEmpty()) {
-        type = "company";
-        accountId = (Integer) resultLogin.get("accountId");
-        verify = (Boolean) resultLogin.get("verify");
-        if (verify) {
-          Cookie cookie = new Cookie("companyId", String.valueOf(accountId));
-          cookie.setMaxAge(24 * 60 * 60);
-          cookie.setHttpOnly(true);
-          response.addCookie(cookie);
-          return "redirect:/";
-        } else {
-          return "redirect:/techJob/login?accountId="
-              + accountId
-              + "&type="
-              + type
-              + "&verify=false";
-        }
       }
     }
     return "redirect:/techJob/login?text=login-fail";
@@ -145,18 +140,20 @@ public class CommonController {
       @PathVariable(name = "accountId") int accountId,
       @ModelAttribute(name = "verifyCode") String verifyCode) {
     if (type.equals("user") && userService.checkVerifyCode(accountId, verifyCode)) {
-      Cookie cookie = new Cookie("userId", String.valueOf(accountId));
+      Cookie cookie = new Cookie("user", String.valueOf(accountId));
       cookie.setMaxAge(24 * 60 * 60);
+      cookie.setPath("/techJob");
       cookie.setHttpOnly(true);
       response.addCookie(cookie);
-      return "redirect:/user";
+      return "redirect:/techJob/user";
     }
     if (type.equals("company") && companyService.checkVerifyCode(accountId, verifyCode)) {
-      Cookie cookie = new Cookie("companyId", String.valueOf(accountId));
+      Cookie cookie = new Cookie("company", String.valueOf(accountId));
       cookie.setMaxAge(24 * 60 * 60);
+      cookie.setPath("/techJob");
       cookie.setHttpOnly(true);
       response.addCookie(cookie);
-      return "redirect:/";
+      return "redirect:/techJob/company";
     }
     return "redirect:/techJob/login?text=check-verifyCode-fail";
   }
@@ -215,5 +212,27 @@ public class CommonController {
     } else {
       return "redirect:/techJob/company-register?text=create-company-fail";
     }
+  }
+
+  @GetMapping("/job/{id}")
+  public String getJobInfo(
+      Model model, @PathVariable(name = "id") int jobId, @ModelAttribute(name = "notification") NotificationRequest notification) {
+    OutputJobDTO job = jobService.findById(jobId);
+    if (job == null) {
+     return "redirect:/?text=job-not-found";
+    }
+    if (notification.getText() != null) {
+      switch (notification.getText()) {
+        case "create-company-fail":
+          notification.setText(
+              "Email của công ty đã có trong hệ thống <br> Công ty có thể yêu cầu lấy lại mật khẩu trong trường hợp bị quên");
+          break;
+        default:
+          notification.setText(null);
+          break;
+      }
+    }
+    model.addAttribute("job", job);
+    return "job-info";
   }
 }

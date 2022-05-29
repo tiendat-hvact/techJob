@@ -29,8 +29,13 @@ public class FileServiceImpl implements FileService {
   }
 
   @Override
-  public void createFile(InputFileDTO data) {
-    File file = genericMapper.mapToType(data, File.class);
+  public void createOrUpdateFile(Integer userId, InputFileDTO data) {
+    File file = fileRepository.findByUserId(userId).orElse(null);
+    if (file != null) {
+      genericMapper.copyNonNullProperties(data, file);
+    } else {
+      file = genericMapper.mapToType(data, File.class);
+    }
     file.setCreateDate(LocalDate.now());
     fileRepository.save(file);
   }

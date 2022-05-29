@@ -16,5 +16,8 @@ public class OutputUserDTO {
   private String address;
   private String verifyCode;
   private String state;
+  private String createBy;
   private LocalDate createDate;
+  private String updateBy;
+  private LocalDate updateDate;
 }

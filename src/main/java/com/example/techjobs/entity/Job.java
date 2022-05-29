@@ -45,7 +45,7 @@ public class Job {
   private String academicLevel;
 
   @Column(name = "experience", nullable = false)
-  private Integer experience;
+  private String experience;
 
   @Column(name = "working_form", nullable = false, length = 100)
   private String workingForm;
@@ -61,6 +61,9 @@ public class Job {
   @Lob
   @Column(name = "requirement", nullable = false)
   private String requirement;
+
+  @Column(name = "deadline", nullable = false)
+  private LocalDate deadline;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "company_id")

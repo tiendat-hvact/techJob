@@ -34,7 +34,6 @@
       <div class="w-login m-auto">
         <div class="login-logo">
           <h3>
-            <!-- <a href="#">Tech<span class="txb-logo">Jobs.</span></a> -->
             <a href="/">
               <img
                   alt="TechJobs"
@@ -65,9 +64,8 @@
           </div>
           <!-- login main form -->
           <div class="col-md-6 col-sm-12 col-12 login-main-right">
-
             <form class="login-form" method="post" th:action="@{/techJob/login-account}"
-                  th:object="${user}">
+                  th:object="${account}">
               <div class="login-main-header">
                 <h3>Đăng Nhập</h3>
               </div>
@@ -81,6 +79,25 @@
                 <div class="div lg-lable">
                   <h5>Password</h5>
                   <input class="input form-control-lgin" th:field="*{password}" type="password">
+                </div>
+              </div>
+              <div class="d-flex justify-content-around" style="margin-top: 0.5rem">
+                <div class="form-check">
+                  <input class="form-check-input"
+                         id="flexRadioDefault1"
+                         name="flexRadioDefault" th:field="*{type}" th:value="user"
+                         type="radio">
+                  <label class="form-check-label" for="flexRadioDefault1">
+                    Người tìm việc
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" id="flexRadioDefault2"
+                         name="flexRadioDefault" th:field="*{type}" th:value="company"
+                         type="radio">
+                  <label class="form-check-label" for="flexRadioDefault2">
+                    Nhà tuyển dụng
+                  </label>
                 </div>
               </div>
               <div class="form-group d-block frm-text">
@@ -188,6 +205,8 @@
   $("#notification").click(function () {
     $("#notification").hide();
   });
+
+  $("#flexRadioDefault1").prop("checked", true);
 
   function onClickCondition() {
     Swal.fire({

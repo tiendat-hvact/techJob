@@ -35,7 +35,6 @@
 <div class="container-fluid fluid-nav another-page">
   <div class="container cnt-tnar">
     <nav class="navbar navbar-expand-lg navbar-light bg-light tjnav-bar">
-      <!-- <a class="navbar-brand" href="#">Navbar</a> -->
       <a class="nav-logo" href="/">
         <img src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653292015/system/logo_02.png">
       </a>
@@ -71,22 +70,24 @@
 
 <!-- recuiter Nav -->
 <nav class="navbar navbar-expand-lg navbar-light nav-recuitment">
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNava" aria-controls="navbarNava" aria-expanded="false" aria-label="Toggle navigation">
+  <button aria-controls="navbarNava" aria-expanded="false" aria-label="Toggle navigation"
+          class="navbar-toggler"
+          data-target="#navbarNava" data-toggle="collapse" type="button">
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse container" id="navbarNava">
     <ul class="navbar-nav nav-recuitment-li">
       <li class="nav-item active">
-        <a class="nav-link" href="/techJob/user">Quản lý hồ sơ</a>
+        <a class="nav-link" href="/techJob/company">Quản lý hồ sơ</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Công ty đang theo dõi</a>
+        <a class="nav-link" href="/techJob/company/get-form-create-job">Đăng tin tuyển dụng</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Việc làm đang theo dõi</a>
+        <a class="nav-link" href="#">Quản lý tin tuyển dụng</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Việc làm đã đăng ký</a>
+        <a class="nav-link" href="#">Quản lý người ứng tuyển</a>
       </li>
     </ul>
   </div>
@@ -115,148 +116,101 @@
   <div class="container published-recuitment-content">
     <div class="row">
       <div class="col-md-8 col-sm-12 col-12 recuitment-inner">
-        <form class="employee-form" enctype="multipart/form-data" method="post"
-              th:action="@{/techJob/user/update-info}" th:object="${user}">
+        <form class="recuitment-form" enctype="multipart/form-data" method="post"
+              th:action="@{/techJob/company/update-info}" th:object="${company}">
           <div class="accordion" id="accordionExample">
             <div class="card recuitment-card">
-              <div class="card-header recuitment-card-header" id="headingOne">
+              <div class="card-header recuitment-card-header" id="heading4">
                 <h2 class="mb-0">
-                  <a aria-controls="collapseOne" aria-expanded="true"
-                     class="btn btn-link btn-block text-left recuitment-header"
-                     data-target="#collapseOne" data-toggle="collapse"
-                     type="button">
-                    Thông tin tài khoản
-                    <span class="clicksd" id="clickc1_advance2">
+                  <a aria-controls="collapse4"
+                     aria-expanded="false"
+                     class="btn btn-link btn-block text-left collapsed recuitment-header"
+                     data-target="#collapse4"
+                     data-toggle="collapse" type="button">
+                    Thông tin công ty
+                    <span class="clicksd" id="clickc1_advance4">
                       <i class="fa fa fa-angle-up"></i>
                     </span>
                   </a>
                 </h2>
               </div>
-
-              <div aria-labelledby="headingOne" class="collapse show"
-                   data-parent="#accordionExample"
-                   id="collapseOne">
-                <div class="card-body recuitment-body row">
-                  <div class="col-md-3">
-                    <div class="avatar-upload">
-                      <div class="avatar-edit">
-                        <input accept=".png, .jpg, .jpeg" id="imageUpload" th:field="*{fileAvatar}"
-                               type='file'/>
-                        <label for="imageUpload"></label>
-                      </div>
-                      <div class="avatar-preview">
-                        <div id="imagePreview"
-                             th:style="'background-image:url(' + ${avatar} + ');'">
+              <div aria-labelledby="heading4" class="collapse show" data-parent="#collapse4"
+                   id="collapse4">
+                <div class="card-body recuitment-body">
+                  <div class="form-group row">
+                    <label
+                        class="col-sm-3 d-flex flex-column justify-content-center col-form-label text-right label">Logo
+                      công ty</label>
+                    <div class="col-sm-9 ">
+                      <div class="avatar-upload">
+                        <div class="avatar-edit">
+                          <input accept=".png, .jpg, .jpeg" id="imageUpload" th:field="*{file}"
+                                 type='file'/>
+                          <label for="imageUpload"></label>
+                        </div>
+                        <div class="avatar-preview">
+                          <div id="imagePreview"
+                               th:style="'background-image:url(' + ${avatar} + ');'">
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div class="col-md-9">
-                    <div class="form-group row">
-                      <label class="col-sm-3 col-form-label text-right label">Họ tên</label>
-                      <div class="col-sm-9">
-                        <input class="form-control" placeholder="Nhập họ và tên" th:field="*{name}"
-                               type="text">
-                      </div>
-                    </div>
-
-                    <div class="form-group row">
-                      <label class="col-sm-3 col-form-label text-right label">Giới tính</label>
-                      <div class="col-sm-9">
-                        <select class="form-control" id="jobGender" th:field="*{sex}" type="text">
-                          <option value="">Chọn giới tính</option>
-                          <option th:value="Male">Nam</option>
-                          <option th:value="Female">Nữ</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div class="form-group row">
-                      <label class="col-sm-3 col-form-label text-right label">Ngày sinh</label>
-                      <div class="col-sm-9">
-                        <input class="form-control" th:field="*{dob}" type="date">
-                      </div>
-                    </div>
-                    <div class="form-group row">
-                      <label class="col-sm-3 col-form-label text-right label">Email</label>
-                      <div class="col-sm-9">
-                        <input class="form-control" th:field="*{email}" type="text">
-                      </div>
-                    </div>
-                    <div class="form-group row">
-                      <label class="col-sm-3 col-form-label text-right label">Số điện thoại</label>
-                      <div class="col-sm-9">
-                        <input class="form-control" th:field="*{phone}" type="text">
-                      </div>
-                    </div>
-                    <div class="form-group row">
-                      <label class="col-sm-3 col-form-label text-right label">Chỗ ở hiện tại</label>
-                      <div class="col-sm-9">
-                        <input class="form-control" placeholder="Nhập địa chỉ" th:field="*{address}"
-                               type="text">
-                      </div>
-                    </div>
-                  </div>
-
-                </div>
-              </div>
-            </div>
-            <div class="card recuitment-card">
-              <div class="card-header recuitment-card-header" id="headingTwo">
-                <h2 class="mb-0">
-                  <a aria-controls="collapseTwo"
-                     aria-expanded="false"
-                     class="btn btn-link btn-block text-left collapsed recuitment-header"
-                     data-target="#collapseTwo"
-                     data-toggle="collapse" type="button">
-                    CV bản thân
-                    <span class="clicksd" id="clickc1_advance3">
-                      <i class="fa fa fa-angle-up"></i>
-                    </span>
-                  </a>
-                </h2>
-              </div>
-              <div aria-labelledby="headingTwo" class="collapse show"
-                   data-parent="#accordionExample"
-                   id="collapseTwo">
-                <div class="card-body recuitment-body">
-                  <div class="form-group row" th:if="${cv != null}">
-                    <label class="col-sm-3 col-form-label text-right label">CV đã có:</label>
-                    <div class="col-sm-9" style="margin: auto">
-                      <a target="_blank" th:href="${cv.url}" th:text="${cv.name}"></a>
+                  <div class="form-group row">
+                    <label class="col-sm-3 col-form-label text-right label">Tên công ty</label>
+                    <div class="col-sm-9">
+                      <input class="form-control" placeholder="Nhập tên công ty" th:field="*{name}"
+                             type="text"/>
                     </div>
                   </div>
                   <div class="form-group row">
-                    <label class="col-sm-3 col-form-label text-right label">Chọn cv<span
-                        class="pl-2" style="color: red">*</span></label>
+                    <label class="col-sm-3 col-form-label text-right label">Email</label>
                     <div class="col-sm-9">
-                      <input accept=".pdf" class="recuitment-card-acttachment" id="file"
-                             th:field="*{fileCV}"
-                             type="file"/>
-                      <label class="btn-1" for="file"><i class="fa fa-paperclip pr-2"></i>Chọn file</label>
-                      <!-- jQuery lấy tên file -->
-                      <script>
-                        $(document).ready(function () {
-                          $('.recuitment-card-acttachment').change(function (e) {
-                            var fileName = e.target.files[0].name;
-                            document.getElementById("previewFileName").innerHTML = fileName;
-                            $(".output-file").append(
-                                '<style>.output-file:before{display:inline-block !important;}</style>');
-                          });
-                        });
-                      </script>
-                      <p class="output-file">
-                        <span id="previewFileName"></span>
-                      </p>
+                      <input class="form-control" placeholder="Nhập email" th:field="*{email}"
+                             type="text"/>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-sm-3 col-form-label text-right label">Điện thoại</label>
+                    <div class="col-sm-9">
+                      <input class="form-control" placeholder="Nhập số điện thoại"
+                             th:field="*{phone}"
+                             type="text"/>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-sm-3 col-form-label text-right label">Tỉnh/ Thành phố</label>
+                    <div class="col-sm-9">
+                      <select class="form-control" data-minimum-results-for-search="Infinity"
+                              id="jobProvince2" th:field="*{city}">
+                        <option th:each="item : ${T(com.example.techjobs.common.enums.CityConstant).values()}"
+                                th:selected="(${item.name} == *{city})"
+                                th:text="${item.value}" th:value="${item.name}"></option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-sm-3 col-form-label text-right label">Địa chỉ</label>
+                    <div class="col-sm-9">
+                      <input class="form-control" placeholder="Nhập địa chỉ" th:field="*{address}"
+                             type="text"/>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-sm-3 col-form-label text-right label">Giới thiệu về công
+                      ty</label>
+                    <div class="col-sm-9">
+                      <textarea class="form-control" placeholder="Sơ lược về công ty" rows="5"
+                                th:field="*{introduce}" type="text"></textarea>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-
           <div class="rec-submit">
-            <button class="btn-submit-recuitment mb-3 ml-3" name="" type="submit">
-              <i class="fa fa-floppy-o pr-2"></i>Lưu Hồ Sơ
+            <button class="btn-submit-recuitment" name="" type="submit">
+              <i class="fa fa-floppy-o pr-2"></i>Lưu hồ sơ
             </button>
           </div>
         </form>
@@ -269,11 +223,10 @@
             <img th:src="${avatar}">
           </div>
           <div class="clearfix list-rec">
-            <h4 th:text="${user.name}"></h4>
+            <h4>NESTLE Inc.</h4>
             <ul>
-              <li><a href="#">Nhà tuyển dụng đang theo dõi <strong>(0)</strong></a></li>
-              <li><a href="#">Việc làm đang theo dõi <strong>(450)</strong></a></li>
-              <li><a href="#">Việc làm đã nộp cv <strong>(1150)</strong></a></li>
+              <li><a href="#">Việc làm đang đăng <strong>(0)</strong></a></li>
+              <li><a href="#">Follower <strong>(450)</strong></a></li>
             </ul>
           </div>
         </div>
@@ -285,39 +238,6 @@
 <!-- (end) published recuitment -->
 
 <div class="clearfix"></div>
-
-
-<!-- job support -->
-<div class="container-fluid job-support-wrapper">
-  <div class="container-fluid job-support-wrap">
-    <div class="container job-support">
-      <div class="row">
-        <div class="col-md-6 col-sm-12 col-12">
-          <ul class="spp-list">
-            <li>
-              <span><i class="fa fa-question-circle pr-2 icsp"></i>Hỗ trợ nhà tuyển dụng:</span>
-            </li>
-            <li>
-              <span><i class="fa fa-phone pr-2 icsp"></i>0123.456.789</span>
-            </li>
-          </ul>
-        </div>
-        <div class="col-md-6 col-sm-12 col-12">
-          <div class="newsletter">
-            <span class="txt6">Đăng ký nhận bản tin việc làm</span>
-            <div class="input-group frm1">
-              <input class="newsletter-email form-control" placeholder="Nhập email của bạn"
-                     type="text">
-              <a class="input-group-addon" href="#"><i
-                  class="fa fa-lg fa-envelope-o colorb"></i></a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- (end) job support -->
 
 <!-- notification -->
 <div id="notification" th:if="${notification.text != null }" th:object="${notification}">
@@ -341,18 +261,18 @@
         </h2>
         <ul class="footer-contact">
           <li>
-            <a>
+            <a href="#">
               <i class="fa fa-phone fticn"></i> +123 456 7890
             </a>
           </li>
           <li>
-            <a>
+            <a href="#">
               <i class="fa fa-envelope fticn"></i>
               hello@123.com
             </a>
           </li>
           <li>
-            <a>
+            <a href="#">
               <i class="fa fa-map-marker fticn"></i>
               33 Xô Viết Nghệ Tĩnh, Đà Nẵng
             </a>
@@ -411,13 +331,14 @@
 <footer class="container-fluid copyright-wrap">
   <div class="container copyright">
     <p class="copyright-content">
-      Copyright © 2020 <a href="/"> Tech<b>Job</b></a>. All Right Reserved.
+      Copyright © 2020 <a href="#"> Tech<b>Job</b></a>. All Right Reserved.
     </p>
   </div>
 </footer>
 
 
 <!-- (end) footer -->
+
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
@@ -429,10 +350,11 @@
 <script src="/js/select2.min.js"></script>
 <script src="/js/jobdata.js"></script>
 
-<script src="js/main.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
 <!-- Owl Stylesheets Javascript -->
-<script src="js/owlcarousel/owl.carousel.js"></script>
+<script src="/js/owlcarousel/owl.carousel.js"></script>
 <!-- Read More Plugin -->
+
 <script type="text/javascript">
   // Avatar upload and preview
   function readURL(input) {

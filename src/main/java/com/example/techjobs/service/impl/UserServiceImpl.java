@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService {
     Map<String, Object> result = null;
     User user =
         userRepository
-            .findByEmailAndStateNot(data.getEmail(), StateConstant.DELETED.getValue())
+            .findByEmailAndStateNot(data.getEmail(), StateConstant.DELETED.name())
             .orElse(null);
     if (user != null) {
       if (attributeEncryptor.matches(data.getPassword(), user.getPassword())) {
@@ -83,7 +83,7 @@ public class UserServiceImpl implements UserService {
   public Boolean checkVerifyCode(Integer accountId, String verifyCode) {
     User user =
         userRepository
-            .findByIdAndStateNot(accountId, StateConstant.DELETED.getValue())
+            .findByIdAndStateNot(accountId, StateConstant.DELETED.name())
             .orElse(null);
     if (user != null && attributeEncryptor.matches(verifyCode, user.getVerifyCode())) {
       user.setState(StateConstant.ACTIVE.name());
@@ -169,7 +169,7 @@ public class UserServiceImpl implements UserService {
         dataFile.setName(name);
         dataFile.setUrl(ImgConstant.Prefix.getValue() + "cv/" + name);
         dataFile.setUserId(userId);
-        fileService.createFile(dataFile);
+        fileService.createOrUpdateFile(userId, dataFile);
       }
       user.setUpdateDate(LocalDate.now());
       userRepository.save(user);

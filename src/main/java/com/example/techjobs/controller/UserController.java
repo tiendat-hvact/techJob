@@ -1,6 +1,7 @@
 package com.example.techjobs.controller;
 
 import com.example.techjobs.common.mapper.GenericMapper;
+import com.example.techjobs.dto.NotificationRequest;
 import com.example.techjobs.dto.inputDTO.InputUserDTO;
 import com.example.techjobs.dto.outputDTO.OutputFileDTO;
 import com.example.techjobs.dto.outputDTO.OutputUserDTO;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/user")
+@RequestMapping("/techJob/user")
 public class UserController {
 
   private final UserService userService;
@@ -33,15 +34,29 @@ public class UserController {
 
   @GetMapping
   public String userFindById(
-      Model model, @CookieValue(name = "userId", defaultValue = "0") int userId) {
+      Model model,
+      @ModelAttribute(name = "notification") NotificationRequest notification,
+      @CookieValue(name = "user", defaultValue = "0") int userId) {
     if (userId == 0) {
       return "redirect:/techJob/login?text=unauthorized";
     }
     OutputUserDTO user = userService.findById(userId);
     if (user != null) {
+      if (notification.getText() != null) {
+        switch (notification.getText()) {
+          case "update-fail":
+            notification.setText(
+                "Cập nhật thông tin thất bại <br> Email mới của bạn đã có trong hệ thống");
+            break;
+          default:
+            notification.setText(null);
+            break;
+        }
+      }
       OutputFileDTO cv = fileService.findByUserId(userId);
       model.addAttribute("user", genericMapper.mapToType(user, InputUserDTO.class));
       model.addAttribute("avatar", user.getAvatar());
+      model.addAttribute("notification", notification);
       model.addAttribute("cv", cv);
       return "user-info";
     }
@@ -50,9 +65,12 @@ public class UserController {
 
   @PostMapping("/update-info")
   public String userUpdate(
-      @CookieValue(name = "userId", defaultValue = "0") int userId,
+      @CookieValue(name = "user", defaultValue = "0") int userId,
       @ModelAttribute InputUserDTO data) {
-    userService.updateUser(userId, data);
-    return "redirect:/user";
+    if (userService.updateUser(userId, data)) {
+      return "redirect:/techJob/user";
+    } else {
+      return "redirect:/techJob/user?text=update-fail";
+    }
   }
 }

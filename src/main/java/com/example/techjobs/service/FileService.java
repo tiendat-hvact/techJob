@@ -7,5 +7,5 @@ public interface FileService {
 
   OutputFileDTO findByUserId(Integer userId);
 
-  void createFile(InputFileDTO data);
+  void createOrUpdateFile(Integer userId, InputFileDTO data);
 }

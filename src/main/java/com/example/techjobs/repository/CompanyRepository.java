@@ -9,4 +9,6 @@ public interface CompanyRepository extends JpaRepository<Company, Integer> {
   Optional<Company> findByIdAndStateNot(Integer companyId, String stateNot);
 
   Optional<Company> findByEmailAndStateNot(String email, String stateNot);
+
+  Optional<Company> findByIdNotAndEmailAndStateNot(Integer companyId, String email, String stateNot);
 }
