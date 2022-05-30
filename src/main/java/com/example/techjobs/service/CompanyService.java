@@ -3,12 +3,17 @@ package com.example.techjobs.service;
 import com.example.techjobs.dto.LoginRequest;
 import com.example.techjobs.dto.inputDTO.InputCompanyDTO;
 import com.example.techjobs.dto.outputDTO.OutputCompanyDTO;
+import com.example.techjobs.dto.outputDTO.OutputJobDTO;
+import java.util.List;
 import java.util.Map;
 
 public interface CompanyService {
 
   /** Tìm tài khoản nhà tuyển dụng theo ID */
   OutputCompanyDTO findById(Integer companyId);
+
+  /** Lấy ra danh sách công ty có giới hạn */
+  List<OutputCompanyDTO> findLimit(Integer limit);
 
   /** Kiểm tra tài khoản login */
   Map<String, Object> loginAccount(LoginRequest data);

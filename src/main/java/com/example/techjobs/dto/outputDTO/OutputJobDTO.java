@@ -6,6 +6,7 @@ import lombok.Data;
 
 @Data
 public class OutputJobDTO {
+  private Integer id;
   private String name;
   private Integer numberRecruit;
   private String gender;

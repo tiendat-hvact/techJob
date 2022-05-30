@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,21 +27,48 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/techJob")
 public class CommonController {
-  
+
   private final CompanyService companyService;
   private final UserService userService;
   private final JobService jobService;
-  
+
   @Autowired
-  public CommonController(CompanyService companyService,
-      UserService userService, JobService jobService) {
+  public CommonController(
+      CompanyService companyService, UserService userService, JobService jobService) {
     this.companyService = companyService;
     this.userService = userService;
     this.jobService = jobService;
   }
 
   @GetMapping
-  public String getHome(Model model) {
+  public String getHome(
+      @CookieValue(name = "user", defaultValue = "0") int userId,
+      @CookieValue(name = "company", defaultValue = "0") int companyId,
+      Model model,
+      @ModelAttribute(name = "notification") NotificationRequest notification) {
+    if (notification.getText() != null) {
+      switch (notification.getText()) {
+        case "job-not-found":
+          notification.setText("Tin tuyển dụng không thể tìm thấy trong hệ thống");
+          break;
+        default:
+          notification.setText(null);
+          break;
+      }
+    }
+    if (userId != 0) {
+      model.addAttribute("account", userId);
+      model.addAttribute("type", "user");
+    } else if (companyId != 0) {
+      model.addAttribute("account", companyId);
+      model.addAttribute("type", "company");
+    } else {
+      model.addAttribute("account", 0);
+      model.addAttribute("type", "");
+    }
+    model.addAttribute("companies", companyService.findLimit(6));
+    model.addAttribute("jobs", jobService.findLimit(18));
+    model.addAttribute("notification", notification);
     return "home";
   }
 
@@ -109,7 +137,7 @@ public class CommonController {
         cookie.setPath("/techJob");
         cookie.setHttpOnly(true);
         response.addCookie(cookie);
-        return "redirect:/techJob/user";
+        return "redirect:/techJob/" + type;
       } else {
         return "redirect:/techJob/login?accountId=" + accountId + "&type=" + type + "&verify=false";
       }
@@ -216,21 +244,39 @@ public class CommonController {
 
   @GetMapping("/job/{id}")
   public String getJobInfo(
-      Model model, @PathVariable(name = "id") int jobId, @ModelAttribute(name = "notification") NotificationRequest notification) {
+      Model model,
+      @PathVariable(name = "id") int jobId,
+      @CookieValue(name = "user", defaultValue = "0") int userId,
+      @CookieValue(name = "company", defaultValue = "0") int companyId,
+      @ModelAttribute(name = "notification") NotificationRequest notification) {
     OutputJobDTO job = jobService.findById(jobId);
     if (job == null) {
-     return "redirect:/?text=job-not-found";
+      return "redirect:/?text=job-not-found";
     }
     if (notification.getText() != null) {
       switch (notification.getText()) {
-        case "create-company-fail":
+        case "apply-success":
           notification.setText(
-              "Email của công ty đã có trong hệ thống <br> Công ty có thể yêu cầu lấy lại mật khẩu trong trường hợp bị quên");
+              "Đăng ký ứng tuyển thành công <br> Xin hãy chờ phía Công ty liên hệ với bạn");
+          break;
+        case "apply-fail":
+          notification.setText(
+              "Đăng ký ứng tuyển thất bại <br> Xin hãy kiểm tra lại tài khoản của bạn đã có CV chưa ?");
           break;
         default:
           notification.setText(null);
           break;
       }
+    }
+    if (userId != 0) {
+      model.addAttribute("account", userId);
+      model.addAttribute("type", "user");
+    } else if (companyId != 0) {
+      model.addAttribute("account", companyId);
+      model.addAttribute("type", "company");
+    } else {
+      model.addAttribute("account", 0);
+      model.addAttribute("type", "");
     }
     model.addAttribute("job", job);
     return "job-info";

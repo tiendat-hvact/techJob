@@ -12,14 +12,20 @@ import com.example.techjobs.common.util.Utils;
 import com.example.techjobs.dto.LoginRequest;
 import com.example.techjobs.dto.inputDTO.InputCompanyDTO;
 import com.example.techjobs.dto.outputDTO.OutputCompanyDTO;
+import com.example.techjobs.dto.outputDTO.OutputJobDTO;
 import com.example.techjobs.entity.Company;
 import com.example.techjobs.repository.CompanyRepository;
 import com.example.techjobs.service.CompanyService;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,6 +60,15 @@ public class CompanyServiceImpl implements CompanyService {
       company.setCity(CityConstant.getEnumKeyForValue(company.getCity()));
     }
     return genericMapper.mapToType(company, OutputCompanyDTO.class);
+  }
+
+  @Override
+  public List<OutputCompanyDTO> findLimit(Integer limit) {
+    Page<Company> companies =
+        companyRepository.findAllAndStateNot(
+            StateConstant.DELETED.name(),
+            PageRequest.of(0, limit, Sort.by(Direction.DESC, "createDate")));
+    return genericMapper.mapToListOfType(companies.getContent(), OutputCompanyDTO.class);
   }
 
   @Override

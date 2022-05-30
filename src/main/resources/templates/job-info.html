@@ -50,16 +50,22 @@
       </button>
 
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto my-2 my-lg-0 tnav-right tn-nav">
-          <li class="nav-item active">
-            <a class="nav-link" href="#"><i aria-hidden="true" class="fa fa-search"></i> <span
-                class="hidden-text">Tìm kiếm</span></a>
-          </li>
+        <ul class="navbar-nav mr-auto my-2 my-lg-0 tnav-right tn-nav" th:if="${account == 0}">
           <li class="nav-item">
             <a class="nav-link" href="/techJob/user-register">Đăng Ký</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/techJob/login">Đăng Nhập</a>
+          </li>
+        </ul>
+        <ul class="navbar-nav mr-auto my-2 my-lg-0 tnav-right tn-nav" th:if="${account != 0 and type == 'company'}">
+          <li class="nav-item">
+            <a class="nav-link btn-employers" href="/techJob/company" tabindex="-1" aria-disabled="true">Nhà Tuyển Dụng</a>
+          </li>
+        </ul>
+        <ul class="navbar-nav mr-auto my-2 my-lg-0 tnav-right tn-nav" th:if="${account != 0 and type == 'user'}">
+          <li class="nav-item">
+            <a class="nav-link btn-employers" href="/techJob/user" tabindex="-1" aria-disabled="true">Người tìm việc</a>
           </li>
         </ul>
       </div>
@@ -105,7 +111,7 @@
         <div class="col-md-3 col-sm-12 col-12">
           <div class="jd-header-wrap-right">
             <div class="jd-center">
-              <a class="btn btn-primary btn-apply" href="/techJob/user/register">Nộp đơn</a>
+              <a class="btn btn-primary btn-apply" th:href="@{/techJob/user/apply-job/{id} (id = ${job.id})}">Nộp đơn</a>
             </div>
           </div>
         </div>

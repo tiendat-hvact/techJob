@@ -11,6 +11,11 @@ import com.example.techjobs.repository.CompanyRepository;
 import com.example.techjobs.repository.JobRepository;
 import com.example.techjobs.service.JobService;
 import java.time.LocalDate;
+import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -36,6 +41,15 @@ public class JobServiceImpl implements JobService {
       job.setGender(GenderConstant.valueOf(job.getGender()).getValue());
     }
     return genericMapper.mapToType(job, OutputJobDTO.class);
+  }
+
+  @Override
+  public List<OutputJobDTO> findLimit(Integer limit) {
+    Page<Job> jobs =
+        jobRepository.findAllAndStateNot(
+            StateConstant.DELETED.name(),
+            PageRequest.of(0, limit, Sort.by(Direction.DESC, "createDate")));
+    return genericMapper.mapToListOfType(jobs.getContent(), OutputJobDTO.class);
   }
 
   @Override

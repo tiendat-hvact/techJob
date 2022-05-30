@@ -5,6 +5,7 @@ import com.example.techjobs.dto.NotificationRequest;
 import com.example.techjobs.dto.inputDTO.InputUserDTO;
 import com.example.techjobs.dto.outputDTO.OutputFileDTO;
 import com.example.techjobs.dto.outputDTO.OutputUserDTO;
+import com.example.techjobs.service.ApplyService;
 import com.example.techjobs.service.FileService;
 import com.example.techjobs.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -20,16 +22,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/techJob/user")
 public class UserController {
 
+  private final GenericMapper genericMapper;
+  private final ApplyService applyService;
   private final UserService userService;
   private final FileService fileService;
-  private final GenericMapper genericMapper;
 
   @Autowired
   public UserController(
-      UserService userService, FileService fileService, GenericMapper genericMapper) {
+      GenericMapper genericMapper,
+      ApplyService applyService,
+      UserService userService,
+      FileService fileService) {
+    this.genericMapper = genericMapper;
+    this.applyService = applyService;
     this.userService = userService;
     this.fileService = fileService;
-    this.genericMapper = genericMapper;
   }
 
   @GetMapping
@@ -72,5 +79,15 @@ public class UserController {
     } else {
       return "redirect:/techJob/user?text=update-fail";
     }
+  }
+
+  @GetMapping("/apply-job/{id}")
+  public String applyJob(
+      @CookieValue(name = "user", defaultValue = "0") int userId,
+      @PathVariable(name = "id") Integer jobId) {
+    if (applyService.applyJob(jobId, userId)) {
+      return "redirect:/techJob/job/" + jobId + "?text=apply-success";
+    }
+    return "redirect:/techJob/job/" + jobId + "?text=apply-fail";
   }
 }

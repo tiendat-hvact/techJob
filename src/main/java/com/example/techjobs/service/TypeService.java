@@ -5,5 +5,6 @@ import java.util.List;
 
 public interface TypeService {
 
+  /** Lấy ra danh sách các ngành nghề công việc */
   List<OutputTypeDTO> findAll();
 }
