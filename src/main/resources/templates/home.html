@@ -216,14 +216,14 @@
             <div class="job pagi" th:each="item : ${companies}">
               <div class="job-content">
                 <div class="job-logo">
-                  <a href="#">
+                  <a th:href="@{/techJob/introduce-company/{id} (id = ${item.id})}">
                     <img alt="job-logo" class="job-logo-ima" th:src="${item.avatar}">
                   </a>
                 </div>
 
                 <div class="job-desc">
                   <div class="job-title">
-                    <a href="#" th:text="${item.name}"></a>
+                    <a th:href="@{/techJob/introduce-company/{id} (id = ${item.id})}" th:text="${item.name}"></a>
                   </div>
 
                   <div class="job-inf">

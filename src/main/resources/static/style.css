@@ -353,8 +353,8 @@ button.btn-login {
 footer.login-footer {
   background: #fff;
   padding: 15px 0;
-  box-shadow: -1px 0px 2px 0px #ccc;
-  -webkit-box-shadow: -1px 0px 2px 0px #ccc;
+  box-shadow: -1px 0 2px 0 #ccc;
+  -webkit-box-shadow: -1px 0 2px 0 #ccc;
   display: block;
   position: relative;
   margin-top: -3rem;
@@ -449,7 +449,6 @@ footer.login-footer {
   outline: none;
   background: none;
   padding: 0.5rem 0.7rem;
-  padding-left: 0;
   font-size: 1rem;
   color: #444;
   font-family: 'Roboto', sans-serif;
@@ -798,7 +797,6 @@ input.sinput {
 
 i.sfa {
   position: absolute;
-  z-index: 3000;
   left: 28px;
   top: 16px;
   color: #6f6f6f;
@@ -2929,7 +2927,7 @@ ul.navbar-nav.nav-recuitment-li li a {
 #notification {
   width: 100vw;
   height: 100vh;
-  z-index: 200;
+  z-index: 1000000;
   background-color: rgba(0, 0, 0, 0.3);
   position: fixed;
   top: 0;

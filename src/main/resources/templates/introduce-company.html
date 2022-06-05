@@ -90,43 +90,31 @@
       <div class="row">
         <div class="col-md-2 col-sm-12 col-12">
           <div class="job-detail-header-logo">
-            <a th:href="@{/techJob/introduce-company/{id} (id = ${job.company.id})}">
-              <img alt="job-logo" class="job-logo-ima" th:src="${job.company.avatar}">
+            <a th:href="@{/techJob/introduce-company/{id} (id = ${company.id})}">
+              <img alt="job-logo" class="job-logo-ima" th:src="${company.avatar}">
             </a>
           </div>
         </div>
         <div class="col-md-7 col-sm-12 col-12">
           <div class="job-detail-header-desc">
             <div class="job-detail-header-title">
-              <a th:text="${job.name}"></a>
-            </div>
-            <div class="job-detail-header-company">
-              <a th:href="@{/techJob/introduce-company/{id} (id = ${job.company.id})}"
-                 th:text="${job.company.name}"></a>
+              <a th:text="${company.name}"></a>
             </div>
             <div class="job-detail-header-de">
               <ul>
                 <li>
-                  <i class="fa fa-map-marker icn-jd"></i>
-                  <span th:text="${job.company.city}"></span>
+                  <i class="fa fa-envelope-o ja-icn"></i>
+                  <span th:text="${company.email}"></span>
                 </li>
                 <li>
-                  <i class="fa fa-usd icn-jd"></i>
-                  <span th:text="${job.salary}"></span>
+                  <i class="fa fa-phone ja-icn"></i>
+                  <span th:text="${company.phone}"></span>
                 </li>
                 <li>
-                  <i class="fa fa-calendar icn-jd"></i>
-                  <span th:text="${#temporals.format(job.createDate, 'dd-MM-yyyy')}"></span>
+                  <i class="fa fa-map-marker ja-icn"></i>
+                  <span th:text="${company.address}"></span>
                 </li>
               </ul>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-3 col-sm-12 col-12">
-          <div class="jd-header-wrap-right">
-            <div class="jd-center">
-              <a class="btn btn-primary btn-apply"
-                 th:href="@{/techJob/user/apply-job/{id} (id = ${job.id})}">Nộp đơn</a>
             </div>
           </div>
         </div>
@@ -146,17 +134,9 @@
       <div class="col-md-8 col-sm-12 col-12 clear-left">
         <div class="main-wrapper">
           <h2 class="widget-title">
-            <span>Phúc lợi</span>
+            <span>Giới thiệu về công ty</span>
           </h2>
-          <div class="jd-content" th:utext="${job.welfare}"></div>
-          <h2 class="widget-title">
-            <span>Mô tả công việc</span>
-          </h2>
-          <div class="jd-content" th:utext="${job.description}"></div>
-          <h2 class="widget-title">
-            <span>Yêu cầu công việc</span>
-          </h2>
-          <div class="jd-content" th:utext="${job.requirement}"></div>
+          <div class="jd-content" th:utext="${company.introduce}"></div>
         </div>
       </div>
 
@@ -166,139 +146,15 @@
           <h2 class="widget-title">
             <span>Thông tin</span>
           </h2>
-
-          <div class="job-info-wrap">
-            <div class="job-info-list">
+          <div class="side-bar mb-3">
+            <div class="container">
               <div class="row">
-                <div class="col-sm-6">
-                  <span class="ji-title">Số lượng tuyển:</span>
-                </div>
-                <div class="col-sm-6">
-                  <span class="ji-main" th:text="${job.numberRecruit}"></span>
-                </div>
-              </div>
-            </div>
-
-            <div class="job-info-wrap">
-              <div class="job-info-list">
-                <div class="row">
-                  <div class="col-sm-6">
-                    <span class="ji-title">Giới tính:</span>
-                  </div>
-                  <div class="col-sm-6">
-                    <span class="ji-main" th:text="${job.gender}"></span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="job-info-list">
-                <div class="row">
-                  <div class="col-sm-6">
-                    <span class="ji-title">Hình thức làm việc:</span>
-                  </div>
-                  <div class="col-sm-6">
-                    <span class="ji-main" th:text="${job.workingForm}"></span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="job-info-list">
-                <div class="row">
-                  <div class="col-sm-6">
-                    <span class="ji-title">Lương:</span>
-                  </div>
-                  <div class="col-sm-6">
-                    <span class="ji-main" th:text="${job.salary}"></span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="job-info-list">
-                <div class="row">
-                  <div class="col-sm-6">
-                    <span class="ji-title">Trình độ học vấn:</span>
-                  </div>
-                  <div class="col-sm-6">
-                    <span class="ji-main" th:text="${job.academicLevel}"></span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="job-info-list">
-                <div class="row">
-                  <div class="col-sm-6">
-                    <span class="ji-title">Kinh nghiệm:</span>
-                  </div>
-                  <div class="col-sm-6">
-                    <span class="ji-main" th:text="${job.experience}"></span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="job-info-list">
-                <div class="row">
-                  <div class="col-sm-6">
-                    <span class="ji-title">Ngành nghề:</span>
-                  </div>
-                  <div class="col-sm-6">
-                    <span class="ji-main" th:text="${job.type.name}"></span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="job-info-list">
-                <div class="row">
-                  <div class="col-sm-6">
-                    <span class="ji-title">Hạn nộp:</span>
-                  </div>
-                  <div class="col-sm-6">
-                    <span class="ji-main"
-                          th:text="${#temporals.format(job.deadline, 'dd-MM-yyyy')}"></span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="side-bar mb-3">
-              <h2 class="widget-title">
-                <span>Giới thiệu công ty</span>
-              </h2>
-              <div class="company-intro">
-                <a th:href="@{/techJob/introduce-company/{id} (id = ${job.company.id})}">
-                  <img alt="job-logo" class="job-logo-ima" th:src="${job.company.avatar}">
-                </a>
-              </div>
-              <h2 class="company-intro-name" th:text="${job.company.name}"></h2>
-              <ul class="job-add">
-                <li>
-                  <i class="fa fa-envelope-o ja-icn"></i>
-                  <span th:text="${job.company.email}"></span>
-                </li>
-                <li>
-                  <i class="fa fa-phone ja-icn"></i>
-                  <span th:text="${job.company.phone}"></span>
-                </li>
-                <li>
-                  <i class="fa fa-map-marker ja-icn"></i>
-                  <span th:text="${job.company.address}"></span>
-                </li>
-              </ul>
-
-              <div class="wrap-comp-info mb-2" style="margin-top: 1rem">
-                <a class="btn btn-primary btn-company" th:href="@{/techJob/introduce-company/{id} (id = ${job.company.id})}">Xem thêm</a>
-              </div>
-            </div>
-
-            <div class="side-bar mb-3">
-              <div class="container">
-                <div class="row">
-                  <div class="col-md-12">
-                    <div class="home-ads">
-                      <a href="#">
-                        <img
-                            src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1652924509/system/image_01.jpg">
-                      </a>
-                    </div>
+                <div class="col-md-12">
+                  <div class="home-ads">
+                    <a href="#">
+                      <img
+                          src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1652924509/system/image_01.jpg">
+                    </a>
                   </div>
                 </div>
               </div>
@@ -309,8 +165,8 @@
     </div>
   </div>
 </div>
+</div>
 <!-- (end) Phần thân -->
-
 
 <!-- job support -->
 <div class="container-fluid job-support-wrapper">
@@ -343,18 +199,6 @@
   </div>
 </div>
 <!-- (end) job support -->
-
-<!-- notification -->
-<div id="notification" th:if="${notification.text != null }" th:object="${notification}">
-  <div id="contentNotification">
-    <div id="headerNotification">
-      <h4 style="margin: 0; color: red">THÔNG BÁO</h4>
-      <a class="btn"><i class="fa fa-window-close"></i> Đóng lại</a>
-    </div>
-    <hr id="lineNotification">
-    <p th:utext="${notification.text}"></p>
-  </div>
-</div>
 
 <!-- footer -->
 <div class="container-fluid footer-wrap  clear-left clear-right">
@@ -468,11 +312,6 @@
 <!-- Owl Stylesheets Javascript -->
 <script src="/js/owlcarousel/owl.carousel.js"></script>
 <!-- Read More Plugin -->
-
-<script>
-  $("#notification").click(function () {
-    $("#notification").hide();
-  });
 </script>
 </body>
 </html>

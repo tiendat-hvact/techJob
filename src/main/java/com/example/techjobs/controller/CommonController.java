@@ -4,6 +4,7 @@ import com.example.techjobs.dto.LoginRequest;
 import com.example.techjobs.dto.NotificationRequest;
 import com.example.techjobs.dto.inputDTO.InputCompanyDTO;
 import com.example.techjobs.dto.inputDTO.InputUserDTO;
+import com.example.techjobs.dto.outputDTO.OutputCompanyDTO;
 import com.example.techjobs.dto.outputDTO.OutputJobDTO;
 import com.example.techjobs.service.CompanyService;
 import com.example.techjobs.service.JobService;
@@ -50,6 +51,9 @@ public class CommonController {
       switch (notification.getText()) {
         case "job-not-found":
           notification.setText("Tin tuyển dụng không thể tìm thấy trong hệ thống");
+          break;
+        case "company-not-found":
+          notification.setText("Thông tin công ty không thể tìm thấy trong hệ thống");
           break;
         default:
           notification.setText(null);
@@ -251,7 +255,7 @@ public class CommonController {
       @ModelAttribute(name = "notification") NotificationRequest notification) {
     OutputJobDTO job = jobService.findById(jobId);
     if (job == null) {
-      return "redirect:/?text=job-not-found";
+      return "redirect:/techJob?text=job-not-found";
     }
     if (notification.getText() != null) {
       switch (notification.getText()) {
@@ -280,5 +284,29 @@ public class CommonController {
     }
     model.addAttribute("job", job);
     return "job-info";
+  }
+
+  @GetMapping("/introduce-company/{id}")
+  public String getCompanyIntroduce(
+      Model model,
+      @PathVariable(name = "id") int id,
+      @CookieValue(name = "user", defaultValue = "0") int userId,
+      @CookieValue(name = "company", defaultValue = "0") int companyId) {
+    OutputCompanyDTO company = companyService.findById(id);
+    if (company == null) {
+      return "redirect:/techJob?text=company-not-found";
+    }
+    if (userId != 0) {
+      model.addAttribute("account", userId);
+      model.addAttribute("type", "user");
+    } else if (companyId != 0) {
+      model.addAttribute("account", companyId);
+      model.addAttribute("type", "company");
+    } else {
+      model.addAttribute("account", 0);
+      model.addAttribute("type", "");
+    }
+    model.addAttribute("company", company);
+    return "introduce-company";
   }
 }

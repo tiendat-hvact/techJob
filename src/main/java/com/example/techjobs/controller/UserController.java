@@ -85,9 +85,15 @@ public class UserController {
   public String applyJob(
       @CookieValue(name = "user", defaultValue = "0") int userId,
       @PathVariable(name = "id") Integer jobId) {
-    if (applyService.applyJob(jobId, userId)) {
+    Integer result = applyService.applyJob(jobId, userId);
+    if (result == 0) {
       return "redirect:/techJob/job/" + jobId + "?text=apply-success";
+    } else if (result == 1) {
+      return "redirect:/techJob?text=job-not-found";
+    } else if (result == 2) {
+      return "redirect:/techJob/login?text=unauthorized";
+    } else {
+      return "redirect:/techJob/job/" + jobId + "?text=apply-fail";
     }
-    return "redirect:/techJob/job/" + jobId + "?text=apply-fail";
   }
 }

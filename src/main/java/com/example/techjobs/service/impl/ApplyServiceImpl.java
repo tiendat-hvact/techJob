@@ -44,18 +44,19 @@ public class ApplyServiceImpl implements ApplyService {
   }
 
   @Override
-  public boolean applyJob(Integer jobId, Integer userId) {
+  public Integer applyJob(Integer jobId, Integer userId) {
     Job job = jobRepository.findByIdAndStateNot(jobId, StateConstant.DELETED.name()).orElse(null);
+    if (job == null) return 1;
     User user =
         userRepository.findByIdAndStateNot(userId, StateConstant.DELETED.name()).orElse(null);
+    if (user == null) return 2;
     File file = fileRepository.findByUserId(userId).orElse(null);
-    if (job != null && user != null && file != null) {
-      ApplyId applyId = new ApplyId(userId, jobId);
-      Apply apply = new Apply(applyId, user, job, LocalDate.now());
-      applyRepository.save(apply);
-      emailService.sendEmailNotifyJobApplied(
-          job.getCompany().getEmail(), job.getName(), file.getUrl());
-    }
-    return false;
+    if (file == null) return 3;
+    ApplyId applyId = new ApplyId(userId, jobId);
+    Apply apply = new Apply(applyId, user, job, LocalDate.now());
+    applyRepository.save(apply);
+    emailService.sendEmailNotifyJobApplied(
+        job.getCompany().getEmail(), job.getName(), file.getUrl());
+    return 0;
   }
 }

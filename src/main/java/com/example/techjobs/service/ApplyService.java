@@ -2,5 +2,5 @@ package com.example.techjobs.service;
 
 public interface ApplyService {
 
-  boolean applyJob(Integer jobId, Integer userId);
+  Integer applyJob(Integer jobId, Integer userId);
 }
