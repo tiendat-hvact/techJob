@@ -92,6 +92,10 @@ public class UserController {
       return "redirect:/techJob?text=job-not-found";
     } else if (result == 2) {
       return "redirect:/techJob/login?text=unauthorized";
+    } else if (result == 3) {
+      return "redirect:/techJob/job/" + jobId + "?text=cv-none";
+    } else if (result == 4) {
+      return "redirect:/techJob/job/" + jobId + "?text=apply-existed";
     } else {
       return "redirect:/techJob/job/" + jobId + "?text=apply-fail";
     }

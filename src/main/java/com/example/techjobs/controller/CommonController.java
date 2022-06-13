@@ -1,5 +1,6 @@
 package com.example.techjobs.controller;
 
+import com.example.techjobs.common.util.Utils;
 import com.example.techjobs.dto.LoginRequest;
 import com.example.techjobs.dto.NotificationRequest;
 import com.example.techjobs.dto.inputDTO.InputCompanyDTO;
@@ -194,6 +195,12 @@ public class CommonController {
       Model model, @ModelAttribute(name = "notification") NotificationRequest notification) {
     if (notification.getText() != null) {
       switch (notification.getText()) {
+        case "invalid-info":
+          notification.setText("Thông tin nhập vào không hợp lệ");
+          break;
+        case "password-not-match":
+          notification.setText("Nhập lại mật khẩu không khớp");
+          break;
         case "create-user-fail":
           notification.setText(
               "Email của bạn đã có trong hệ thống <br> Bạn có thể yêu cầu lấy lại mật khẩu trong trường hợp bị quên");
@@ -210,6 +217,16 @@ public class CommonController {
 
   @PostMapping("/create-user")
   public String createUser(@ModelAttribute(name = "user") InputUserDTO user) {
+    if (Utils.isNullOrEmpty(user.getName())
+        || Utils.isNullOrEmpty(user.getPhone())
+        || Utils.isNullOrEmpty(user.getEmail())
+        || Utils.isNullOrEmpty(user.getPassword())
+        || Utils.isNullOrEmpty(user.getRePassword())) {
+      return "redirect:/techJob/user-register?text=invalid-info";
+    }
+    if (!user.getPassword().equals(user.getRePassword())) {
+      return "redirect:/techJob/user-register?text=password-not-match";
+    }
     if (userService.createUser(user)) {
       return "redirect:/techJob/login?text=create-user-success";
     } else {
@@ -222,6 +239,12 @@ public class CommonController {
       Model model, @ModelAttribute(name = "notification") NotificationRequest notification) {
     if (notification.getText() != null) {
       switch (notification.getText()) {
+        case "invalid-info":
+          notification.setText("Thông tin nhập vào không hợp lệ");
+          break;
+        case "password-not-match":
+          notification.setText("Nhập lại mật khẩu không khớp");
+          break;
         case "create-company-fail":
           notification.setText(
               "Email của công ty đã có trong hệ thống <br> Công ty có thể yêu cầu lấy lại mật khẩu trong trường hợp bị quên");
@@ -238,6 +261,18 @@ public class CommonController {
 
   @PostMapping("/create-company")
   public String createCompany(@ModelAttribute(name = "company") InputCompanyDTO company) {
+    if (Utils.isNullOrEmpty(company.getName())
+        || Utils.isNullOrEmpty(company.getEmail())
+        || Utils.isNullOrEmpty(company.getPassword())
+        || Utils.isNullOrEmpty(company.getRePassword())
+        || Utils.isNullOrEmpty(company.getPhone())
+        || Utils.isNullOrEmpty(company.getCity())
+        || Utils.isNullOrEmpty(company.getAddress())) {
+      return "redirect:/techJob/company-register?text=invalid-info";
+    }
+    if (!company.getPassword().equals(company.getRePassword())) {
+      return "redirect:/techJob/company-register?text=password-not-match";
+    }
     if (companyService.createCompany(company)) {
       return "redirect:/techJob/login?text=create-company-success";
     } else {
@@ -262,9 +297,16 @@ public class CommonController {
           notification.setText(
               "Đăng ký ứng tuyển thành công <br> Xin hãy chờ phía Công ty liên hệ với bạn");
           break;
-        case "apply-fail":
+        case "cv-none":
           notification.setText(
-              "Đăng ký ứng tuyển thất bại <br> Xin hãy kiểm tra lại tài khoản của bạn đã có CV chưa ?");
+              "Tài khoản bạn chưa có CV <br> Xin hãy bổ sung CV trước khi ứng tuyển");
+          break;
+        case "apply-existed":
+          notification.setText(
+              "Bạn đã nộp đơn ứng tuyển công việc này <br> Xin hãy chờ phía Công ty liên hệ với bạn");
+          break;
+        case "apply-fail":
+          notification.setText("Đăng ký ứng tuyển thất bại");
           break;
         default:
           notification.setText(null);

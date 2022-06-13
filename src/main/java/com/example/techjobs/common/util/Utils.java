@@ -27,4 +27,9 @@ public class Utils {
             .replaceAll("đ", "d");
     return name.toLowerCase() + "_" + System.currentTimeMillis();
   }
+
+  /** Hàm chuẩn hóa tên file */
+  public static Boolean isNullOrEmpty(String str) {
+    return str == null || str.trim().equals("");
+  }
 }

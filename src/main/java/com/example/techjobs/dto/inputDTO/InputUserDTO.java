@@ -16,6 +16,7 @@ public class InputUserDTO {
 
   private String email;
   private String password;
+  private String rePassword;
   private String phone;
   private String address;
   private MultipartFile fileAvatar;

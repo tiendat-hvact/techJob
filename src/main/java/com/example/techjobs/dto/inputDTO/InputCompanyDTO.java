@@ -9,6 +9,7 @@ public class InputCompanyDTO {
   private String name;
   private String email;
   private String password;
+  private String rePassword;
   private String phone;
   private String city;
   private String address;

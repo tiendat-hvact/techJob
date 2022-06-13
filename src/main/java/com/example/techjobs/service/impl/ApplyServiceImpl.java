@@ -7,7 +7,6 @@ import com.example.techjobs.entity.File;
 import com.example.techjobs.entity.Job;
 import com.example.techjobs.entity.User;
 import com.example.techjobs.repository.ApplyRepository;
-import com.example.techjobs.repository.CompanyRepository;
 import com.example.techjobs.repository.FileRepository;
 import com.example.techjobs.repository.JobRepository;
 import com.example.techjobs.repository.UserRepository;
@@ -20,7 +19,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class ApplyServiceImpl implements ApplyService {
 
-  private final CompanyRepository companyRepository;
   private final ApplyRepository applyRepository;
   private final FileRepository fileRepository;
   private final UserRepository userRepository;
@@ -29,13 +27,11 @@ public class ApplyServiceImpl implements ApplyService {
 
   @Autowired
   public ApplyServiceImpl(
-      CompanyRepository companyRepository,
       ApplyRepository applyRepository,
       FileRepository fileRepository,
       UserRepository userRepository,
       JobRepository jobRepository,
       EmailService emailService) {
-    this.companyRepository = companyRepository;
     this.applyRepository = applyRepository;
     this.fileRepository = fileRepository;
     this.userRepository = userRepository;
@@ -53,7 +49,9 @@ public class ApplyServiceImpl implements ApplyService {
     File file = fileRepository.findByUserId(userId).orElse(null);
     if (file == null) return 3;
     ApplyId applyId = new ApplyId(userId, jobId);
-    Apply apply = new Apply(applyId, user, job, LocalDate.now());
+    Apply apply = applyRepository.findById(applyId).orElse(null);
+    if (apply != null) return 4;
+    apply = new Apply(applyId, user, job, LocalDate.now());
     applyRepository.save(apply);
     emailService.sendEmailNotifyJobApplied(
         job.getCompany().getEmail(), job.getName(), file.getUrl());
