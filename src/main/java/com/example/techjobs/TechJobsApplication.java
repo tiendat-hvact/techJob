@@ -56,7 +56,7 @@ public class TechJobsApplication {
   @Bean
   public JavaMailSender getJavaMailSender() {
     JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-    mailSender.setHost("smtp.gmail.com");
+    mailSender.setHost("smtp-mail.outlook.com");
     mailSender.setPort(587);
     mailSender.setUsername(MY_EMAIL);
     mailSender.setPassword(MY_PASSWORD);

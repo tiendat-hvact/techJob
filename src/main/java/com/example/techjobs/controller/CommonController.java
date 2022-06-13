@@ -157,7 +157,7 @@ public class CommonController {
           .forEach(
               cookie -> {
                 cookie.setValue("");
-                cookie.setPath("/");
+                cookie.setPath("/techJob");
                 cookie.setMaxAge(0);
                 response.addCookie(cookie);
               });
@@ -178,8 +178,7 @@ public class CommonController {
       cookie.setHttpOnly(true);
       response.addCookie(cookie);
       return "redirect:/techJob/user";
-    }
-    if (type.equals("company") && companyService.checkVerifyCode(accountId, verifyCode)) {
+    } else if (type.equals("company") && companyService.checkVerifyCode(accountId, verifyCode)) {
       Cookie cookie = new Cookie("company", String.valueOf(accountId));
       cookie.setMaxAge(24 * 60 * 60);
       cookie.setPath("/techJob");

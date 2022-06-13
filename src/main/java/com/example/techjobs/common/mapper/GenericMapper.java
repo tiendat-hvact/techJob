@@ -24,7 +24,7 @@ public class GenericMapper {
     this.modelMapper = modelMapper;
   }
 
-  // map cả null sang
+  // map dữ liệu của đối tượng class Source sang class Destination
   public <T, E> E mapToType(T source, Class<E> typeDestination) {
     modelMapper.getConfiguration().setAmbiguityIgnored(true);
     if (source == null) {
@@ -33,18 +33,7 @@ public class GenericMapper {
     return modelMapper.map(source, typeDestination);
   }
 
-  // map bỏ qua null
-  public <T, E> E mapToTypeNotNullProperty(T source, Class<E> typeDestination) {
-    if (source == null) {
-      return null;
-    }
-    modelMapper
-        .getConfiguration()
-        .setPropertyCondition(Conditions.isNotNull())
-        .setMatchingStrategy(MatchingStrategies.STRICT);
-    return modelMapper.map(source, typeDestination);
-  }
-
+  //map 1 danh sách của đối tượng class Source sang class Destination
   public <S, T> List<T> mapToListOfType(List<S> source, Class<T> targetClass) {
     modelMapper.getConfiguration().setAmbiguityIgnored(true);
     if (source == null || source.isEmpty()) {
@@ -55,32 +44,12 @@ public class GenericMapper {
         .collect(Collectors.toList());
   }
 
-  public <S, T> List<T> mapToListOfTypeNotNullProperty(List<S> source, Class<T> targetClass) {
-    if (source == null || source.isEmpty()) {
-      return null;
-    }
-    return source.stream()
-        .map(item -> mapToTypeNotNullProperty(item, targetClass))
-        .collect(Collectors.toList());
-  }
-
-  public <S, T> Page<T> toPage(Page<S> source, Class<T> targetClass, Pageable pageable) {
-    if (source == null || source.isEmpty()) {
-      return null;
-    }
-    modelMapper.getConfiguration().setAmbiguityIgnored(true);
-    return new PageImpl<>(
-        source.stream()
-            .map(item -> modelMapper.map(item, targetClass))
-            .collect(Collectors.toList()),
-        pageable,
-        source.getTotalElements());
-  }
-
+  // map các trường có dữ liệu của đối tượng class Source sang đối tượng class Destination
   public void copyNonNullProperties(Object src, Object target) {
     BeanUtils.copyProperties(src, target, getNullPropertyNames(src));
   }
 
+  // tìm ra các trường có dữ liệu null trong đối tượng class Source
   public String[] getNullPropertyNames(Object source) {
     final BeanWrapper src = new BeanWrapperImpl(source);
     java.beans.PropertyDescriptor[] pds = src.getPropertyDescriptors();

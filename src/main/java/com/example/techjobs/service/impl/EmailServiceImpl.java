@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 import javax.mail.internet.MimeMessage;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,9 @@ import org.springframework.stereotype.Service;
 public class EmailServiceImpl implements EmailService {
 
   private final JavaMailSender javaMailSender;
+
+  @Value("${my.email}")
+  private String systemEmail;
 
   @Autowired
   public EmailServiceImpl(JavaMailSender javaMailSender) {
@@ -25,6 +29,7 @@ public class EmailServiceImpl implements EmailService {
   public void sendEmailVerifyCode(String email, String verifyCode) {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
     MimeMessage message = javaMailSender.createMimeMessage();
+    message.setFrom(systemEmail);
     MimeMessageHelper helper = new MimeMessageHelper(message, true, "utf-8");
     String htmlMsg =
         "<!DOCTYPE html>\n"
@@ -58,6 +63,7 @@ public class EmailServiceImpl implements EmailService {
   public void sendEmailNotifyJobApplied(String email, String jobName, String userCV) {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
     MimeMessage message = javaMailSender.createMimeMessage();
+    message.setFrom(systemEmail);
     MimeMessageHelper helper = new MimeMessageHelper(message, true, "utf-8");
     String htmlMsg =
         "<!DOCTYPE html>\n"

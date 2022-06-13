@@ -58,7 +58,6 @@ public class JobServiceImpl implements JobService {
         companyRepository.findByIdAndStateNot(companyId, StateConstant.DELETED.name()).orElse(null);
     if (company != null) {
       Job job = genericMapper.mapToType(data, Job.class);
-      job.setGender(GenderConstant.valueOf(job.getGender()).getValue());
       job.setCompany(company);
       job.setState(StateConstant.ACTIVE.name());
       job.setCreateBy(company.getName());

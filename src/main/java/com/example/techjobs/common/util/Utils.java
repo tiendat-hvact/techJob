@@ -11,11 +11,10 @@ public class Utils {
     String upperCaseLetters = RandomStringUtils.random(2, 65, 90, true, true);
     String lowerCaseLetters = RandomStringUtils.random(2, 97, 122, true, true);
     String numbers = RandomStringUtils.randomNumeric(2);
-    String specialChar = RandomStringUtils.random(2, 33, 47, false, false);
-    return upperCaseLetters.concat(lowerCaseLetters).concat(numbers).concat(specialChar);
+    return upperCaseLetters.concat(lowerCaseLetters).concat(numbers);
   }
 
-  /** Hàm tạo tên file */
+  /** Hàm chuẩn hóa tên file */
   public static String formatFileName(String fileName) {
     String temp = Normalizer.normalize(fileName, Normalizer.Form.NFD);
     Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
