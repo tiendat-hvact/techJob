@@ -10,5 +10,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
   Optional<User> findByEmailAndStateNot(String email, String stateNot);
 
+  Optional<User> findByRole(String role);
+
   Optional<User> findByIdNotAndEmailAndStateNot(Integer userId, String email, String stateNot);
 }

@@ -1,6 +1,7 @@
 package com.example.techjobs.controller;
 
 import com.example.techjobs.common.mapper.GenericMapper;
+import com.example.techjobs.common.util.Utils;
 import com.example.techjobs.dto.NotificationRequest;
 import com.example.techjobs.dto.inputDTO.InputCompanyDTO;
 import com.example.techjobs.dto.inputDTO.InputJobDTO;
@@ -90,6 +91,10 @@ public class CompanyController {
     if (company != null) {
       if (notification.getText() != null) {
         switch (notification.getText()) {
+          case "invalid-info":
+            notification.setText(
+                "Tạo tin tuyển dụng thất bại <br> Xin hãy nhập đầy đủ thông tin trước khi lưu");
+            break;
           case "create-fail":
             notification.setText(
                 "Tạo tin tuyển dụng thất bại <br> Thông tin công ty không có trong hệ thống");
@@ -112,6 +117,17 @@ public class CompanyController {
   public String createJob(
       @CookieValue(name = "company", defaultValue = "0") int companyId,
       @ModelAttribute InputJobDTO data) {
+    if (Utils.isNullOrEmpty(data.getName())
+        || Utils.isNullOrEmpty(String.valueOf(data.getNumberRecruit()))
+        || Utils.isNullOrEmpty(data.getSalary())
+        || Utils.isNullOrEmpty(data.getExperience())
+        || Utils.isNullOrEmpty(data.getWorkingForm())
+        || Utils.isNullOrEmpty(data.getDeadline().toString())
+        || Utils.isNullOrEmpty(data.getWelfare())
+        || Utils.isNullOrEmpty(data.getDescription())
+        || Utils.isNullOrEmpty(data.getRequirement())) {
+      return "redirect:/techJob/company/get-form-create-job?text=invalid-info";
+    }
     Integer jobId = jobService.createJob(companyId, data);
     if (jobId != 0) {
       return "redirect:/techJob/job/" + jobId;

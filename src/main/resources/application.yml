@@ -1,6 +1,3 @@
-my.email: tiendat.1392.dev@outlook.com.vn
-my.password: Dat1392@
-
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/techjob

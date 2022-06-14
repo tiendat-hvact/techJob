@@ -1,36 +1,40 @@
 package com.example.techjobs.service.impl;
 
+import com.example.techjobs.common.encryptor.AttributeEncryptor;
+import com.example.techjobs.common.enums.RoleConstant;
+import com.example.techjobs.entity.User;
+import com.example.techjobs.repository.UserRepository;
 import com.example.techjobs.service.EmailService;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import javax.mail.internet.MimeMessage;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 @Service
 public class EmailServiceImpl implements EmailService {
 
+  private final AttributeEncryptor attributeEncryptor;
   private final JavaMailSender javaMailSender;
-
-  @Value("${my.email}")
-  private String systemEmail;
+  private final UserRepository userRepository;
 
   @Autowired
-  public EmailServiceImpl(JavaMailSender javaMailSender) {
+  public EmailServiceImpl(
+      AttributeEncryptor attributeEncryptor,
+      JavaMailSender javaMailSender,
+      UserRepository userRepository) {
+    this.attributeEncryptor = attributeEncryptor;
     this.javaMailSender = javaMailSender;
+    this.userRepository = userRepository;
   }
 
   @SneakyThrows
   @Override
   public void sendEmailVerifyCode(String email, String verifyCode) {
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-    MimeMessage message = javaMailSender.createMimeMessage();
-    message.setFrom(systemEmail);
-    MimeMessageHelper helper = new MimeMessageHelper(message, true, "utf-8");
     String htmlMsg =
         "<!DOCTYPE html>\n"
             + "<html lang=\"en\">\n"
@@ -51,20 +55,12 @@ public class EmailServiceImpl implements EmailService {
             + "</div>\n"
             + "</body>\n"
             + "</html>";
-    message.setContent(htmlMsg, "text/html; charset=UTF-8");
-    helper.setTo(email);
-    helper.setSubject(
-        "EMAIL XÁC THỰC TÀI KHOẢN " + email + " NGÀY " + formatter.format(LocalDate.now()));
-    this.javaMailSender.send(message);
+    sendEmail(email, htmlMsg);
   }
 
   @Override
   @SneakyThrows
   public void sendEmailNotifyJobApplied(String email, String jobName, String userCV) {
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-    MimeMessage message = javaMailSender.createMimeMessage();
-    message.setFrom(systemEmail);
-    MimeMessageHelper helper = new MimeMessageHelper(message, true, "utf-8");
     String htmlMsg =
         "<!DOCTYPE html>\n"
             + "<html lang=\"en\">\n"
@@ -88,10 +84,26 @@ public class EmailServiceImpl implements EmailService {
             + "</div>\n"
             + "</body>\n"
             + "</html>";
-    message.setContent(htmlMsg, "text/html; charset=UTF-8");
+    sendEmail(email, htmlMsg);
+  }
+
+  @SneakyThrows
+  protected void sendEmail(String email, String htmlMsg) {
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+
+    User admin = userRepository.findByRole(RoleConstant.ADMIN.name()).orElse(null);
+
+    JavaMailSenderImpl jMailSender = (JavaMailSenderImpl) javaMailSender;
+    jMailSender.setUsername(admin.getEmail());
+    jMailSender.setPassword(attributeEncryptor.convertToEntityAttribute(admin.getPassword()));
+
+    MimeMessage message = javaMailSender.createMimeMessage();
+    MimeMessageHelper helper = new MimeMessageHelper(message, true, "utf-8");
+    helper.setFrom(admin.getEmail());
     helper.setTo(email);
     helper.setSubject(
         "THÔNG BÁO THÔNG TIN NGƯỜI ỨNG TUYỂN NGÀY " + formatter.format(LocalDate.now()));
+    message.setContent(htmlMsg, "text/html; charset=UTF-8");
     this.javaMailSender.send(message);
   }
 }

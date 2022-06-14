@@ -44,9 +44,10 @@ public class CommonController {
 
   @GetMapping
   public String getHome(
-      @CookieValue(name = "user", defaultValue = "0") int userId,
-      @CookieValue(name = "company", defaultValue = "0") int companyId,
       Model model,
+      @CookieValue(name = "user", defaultValue = "0") int userId,
+      @CookieValue(name = "admin", defaultValue = "1") int adminId,
+      @CookieValue(name = "company", defaultValue = "0") int companyId,
       @ModelAttribute(name = "notification") NotificationRequest notification) {
     if (notification.getText() != null) {
       switch (notification.getText()) {
@@ -61,16 +62,7 @@ public class CommonController {
           break;
       }
     }
-    if (userId != 0) {
-      model.addAttribute("account", userId);
-      model.addAttribute("type", "user");
-    } else if (companyId != 0) {
-      model.addAttribute("account", companyId);
-      model.addAttribute("type", "company");
-    } else {
-      model.addAttribute("account", 0);
-      model.addAttribute("type", "");
-    }
+    checkCookie(userId, adminId, companyId, model);
     model.addAttribute("companies", companyService.findLimit(6));
     model.addAttribute("jobs", jobService.findLimit(18));
     model.addAttribute("notification", notification);
@@ -135,6 +127,9 @@ public class CommonController {
     }
     if (resultLogin != null && !resultLogin.isEmpty()) {
       accountId = (Integer) resultLogin.get("accountId");
+      if (accountId == 0) {
+        type = "admin";
+      }
       verify = (Boolean) resultLogin.get("verify");
       if (verify) {
         Cookie cookie = new Cookie(type, String.valueOf(accountId));
@@ -220,8 +215,7 @@ public class CommonController {
     if (Utils.isNullOrEmpty(user.getName())
         || Utils.isNullOrEmpty(user.getPhone())
         || Utils.isNullOrEmpty(user.getEmail())
-        || Utils.isNullOrEmpty(user.getPassword())
-        || Utils.isNullOrEmpty(user.getRePassword())) {
+        || Utils.isNullOrEmpty(user.getPassword())) {
       return "redirect:/techJob/user-register?text=invalid-info";
     }
     if (!user.getPassword().equals(user.getRePassword())) {
@@ -264,7 +258,6 @@ public class CommonController {
     if (Utils.isNullOrEmpty(company.getName())
         || Utils.isNullOrEmpty(company.getEmail())
         || Utils.isNullOrEmpty(company.getPassword())
-        || Utils.isNullOrEmpty(company.getRePassword())
         || Utils.isNullOrEmpty(company.getPhone())
         || Utils.isNullOrEmpty(company.getCity())
         || Utils.isNullOrEmpty(company.getAddress())) {
@@ -285,6 +278,7 @@ public class CommonController {
       Model model,
       @PathVariable(name = "id") int jobId,
       @CookieValue(name = "user", defaultValue = "0") int userId,
+      @CookieValue(name = "admin", defaultValue = "1") int adminId,
       @CookieValue(name = "company", defaultValue = "0") int companyId,
       @ModelAttribute(name = "notification") NotificationRequest notification) {
     OutputJobDTO job = jobService.findById(jobId);
@@ -313,16 +307,7 @@ public class CommonController {
           break;
       }
     }
-    if (userId != 0) {
-      model.addAttribute("account", userId);
-      model.addAttribute("type", "user");
-    } else if (companyId != 0) {
-      model.addAttribute("account", companyId);
-      model.addAttribute("type", "company");
-    } else {
-      model.addAttribute("account", 0);
-      model.addAttribute("type", "");
-    }
+    checkCookie(userId, adminId, companyId, model);
     model.addAttribute("job", job);
     return "job-info";
   }
@@ -332,22 +317,30 @@ public class CommonController {
       Model model,
       @PathVariable(name = "id") int id,
       @CookieValue(name = "user", defaultValue = "0") int userId,
+      @CookieValue(name = "admin", defaultValue = "1") int adminId,
       @CookieValue(name = "company", defaultValue = "0") int companyId) {
     OutputCompanyDTO company = companyService.findById(id);
     if (company == null) {
       return "redirect:/techJob?text=company-not-found";
     }
+    checkCookie(userId, adminId, companyId, model);
+    model.addAttribute("company", company);
+    return "introduce-company";
+  }
+
+  protected void checkCookie(int userId, int adminId, int companyId, Model model) {
     if (userId != 0) {
       model.addAttribute("account", userId);
       model.addAttribute("type", "user");
     } else if (companyId != 0) {
       model.addAttribute("account", companyId);
       model.addAttribute("type", "company");
+    } else if (adminId != 1) {
+      model.addAttribute("account", adminId);
+      model.addAttribute("type", "admin");
     } else {
       model.addAttribute("account", 0);
-      model.addAttribute("type", "");
+      model.addAttribute("type", null);
     }
-    model.addAttribute("company", company);
-    return "introduce-company";
   }
 }

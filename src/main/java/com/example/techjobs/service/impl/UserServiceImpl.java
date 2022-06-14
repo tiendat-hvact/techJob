@@ -108,7 +108,7 @@ public class UserServiceImpl implements UserService {
       user.setAvatar(ImgConstant.UnknownUser.getValue());
       user.setPassword(attributeEncryptor.convertToDatabaseColumn(data.getPassword()));
       user.setVerifyCode(attributeEncryptor.convertToDatabaseColumn(verifyCode));
-      user.setRole(RoleConstant.USER.getValue());
+      user.setRole(RoleConstant.USER.name());
       user.setState(StateConstant.WAIT.name());
       user.setCreateBy("unknow");
       user.setCreateDate(LocalDate.now());
@@ -138,8 +138,8 @@ public class UserServiceImpl implements UserService {
         Transformation incoming =
             new Transformation<>()
                 .gravity("face")
-                .height(500)
-                .width(500)
+                .height(400)
+                .width(400)
                 .crop("crop")
                 .chain()
                 .radius("max")

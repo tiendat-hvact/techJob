@@ -51,7 +51,7 @@
       </button>
 
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto my-2 my-lg-0 tnav-right tn-nav" th:if="${account == 0}">
+        <ul class="navbar-nav mr-auto my-2 my-lg-0 tnav-right tn-nav" th:if="${account == 0 and type == null}">
           <li class="nav-item">
             <a class="nav-link" href="/techJob/user-register">Đăng Ký</a>
           </li>
@@ -71,6 +71,13 @@
           <li class="nav-item">
             <a aria-disabled="true" class="nav-link btn-employers" href="/techJob/user"
                tabindex="-1">Người tìm việc</a>
+          </li>
+        </ul>
+        <ul class="navbar-nav mr-auto my-2 my-lg-0 tnav-right tn-nav"
+            th:if="${type == 'admin'}">
+          <li class="nav-item">
+            <a aria-disabled="true" class="nav-link btn-employers" href="/techJob/admin"
+               tabindex="-1">Quản trị viên</a>
           </li>
         </ul>
       </div>
@@ -815,7 +822,7 @@
     <div class="row">
       <div class="col-md-12">
         <div class="home-ads">
-          <a href="#">
+          <a href="https://danangjob.vn">
             <img
                 src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1652979621/system/image_02.png">
           </a>
@@ -1180,7 +1187,7 @@
     <div class="row">
       <div class="col-md-12">
         <div class="home-ads">
-          <a href="#">
+          <a href="https://learning.vietnamworks.com">
             <img
                 src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1652979667/system/image_03.jpg">
           </a>
@@ -1191,38 +1198,6 @@
 </div>
 
 <div class="clearfix"></div>
-
-<!-- job support -->
-<div class="container-fluid job-support-wrapper">
-  <div class="container-fluid job-support-wrap">
-    <div class="container job-support">
-      <div class="row">
-        <div class="col-md-6 col-sm-12 col-12">
-          <ul class="spp-list">
-            <li>
-              <span><i class="fa fa-question-circle pr-2 icsp"></i>Hỗ trợ nhà tuyển dụng:</span>
-            </li>
-            <li>
-              <span><i class="fa fa-phone pr-2 icsp"></i>0123.456.789</span>
-            </li>
-          </ul>
-        </div>
-        <div class="col-md-6 col-sm-12 col-12">
-          <div class="newsletter">
-            <span class="txt6">Đăng ký nhận bản tin việc làm</span>
-            <div class="input-group frm1">
-              <input class="newsletter-email form-control" placeholder="Nhập email của bạn"
-                     type="text">
-              <a class="input-group-addon" href="#"><i
-                  class="fa fa-lg fa-envelope-o colorb"></i></a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- (end) job support -->
 
 <!-- notification -->
 <div id="notification" th:if="${notification.text != null }" th:object="${notification}">

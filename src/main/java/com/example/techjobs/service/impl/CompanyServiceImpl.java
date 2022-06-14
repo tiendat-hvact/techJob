@@ -149,8 +149,8 @@ public class CompanyServiceImpl implements CompanyService {
         Transformation incoming =
             new Transformation<>()
                 .gravity("face")
-                .height(500)
-                .width(500)
+                .height(400)
+                .width(400)
                 .crop("crop")
                 .chain()
                 .radius("max")

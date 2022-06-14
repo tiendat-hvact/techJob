@@ -16,12 +16,6 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 @SpringBootApplication
 public class TechJobsApplication {
 
-  @Value("${my.email}")
-  private String MY_EMAIL;
-
-  @Value("${my.password}")
-  private String MY_PASSWORD;
-
   public static void main(String[] args) {
     SpringApplication.run(TechJobsApplication.class, args);
   }
@@ -55,16 +49,17 @@ public class TechJobsApplication {
 
   @Bean
   public JavaMailSender getJavaMailSender() {
-    JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-    mailSender.setHost("smtp-mail.outlook.com");
-    mailSender.setPort(587);
-    mailSender.setUsername(MY_EMAIL);
-    mailSender.setPassword(MY_PASSWORD);
-    Properties props = mailSender.getJavaMailProperties();
+    JavaMailSenderImpl jMailSender = new JavaMailSenderImpl();
+    jMailSender.setHost("smtp-mail.outlook.com");
+    jMailSender.setPort(587);
+    Properties props = jMailSender.getJavaMailProperties();
     props.put("mail.transport.protocol", "smtp");
     props.put("mail.smtp.auth", "true");
     props.put("mail.smtp.starttls.enable", "true");
     props.put("mail.debug", "true");
-    return mailSender;
+    props.put("mail.smtp.ssl.enable", "false");
+    props.put("mail.smtp.socketFactory.class", "");
+    props.put("mail.smtp.socketFactory.fallback", "false");
+    return jMailSender;
   }
 }
