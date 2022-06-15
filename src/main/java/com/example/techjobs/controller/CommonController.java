@@ -193,6 +193,10 @@ public class CommonController {
         case "invalid-info":
           notification.setText("Thông tin nhập vào không hợp lệ");
           break;
+        case "invalid-password":
+          notification.setText(
+              "Mật khẩu nhập vào không hợp lệ <br> Độ dài bắt buộc của mật khẩu là từ 8 - 20 ký tự");
+          break;
         case "password-not-match":
           notification.setText("Nhập lại mật khẩu không khớp");
           break;
@@ -218,6 +222,9 @@ public class CommonController {
         || Utils.isNullOrEmpty(user.getPassword())) {
       return "redirect:/techJob/user-register?text=invalid-info";
     }
+    if (user.getPassword().length() < 8 || user.getPassword().length() > 20) {
+      return "redirect:/techJob/company-register?text=invalid-password";
+    }
     if (!user.getPassword().equals(user.getRePassword())) {
       return "redirect:/techJob/user-register?text=password-not-match";
     }
@@ -235,6 +242,10 @@ public class CommonController {
       switch (notification.getText()) {
         case "invalid-info":
           notification.setText("Thông tin nhập vào không hợp lệ");
+          break;
+        case "invalid-password":
+          notification.setText(
+              "Mật khẩu nhập vào không hợp lệ <br> Độ dài bắt buộc của mật khẩu là từ 8 - 20 ký tự");
           break;
         case "password-not-match":
           notification.setText("Nhập lại mật khẩu không khớp");
@@ -263,6 +274,9 @@ public class CommonController {
         || Utils.isNullOrEmpty(company.getAddress())) {
       return "redirect:/techJob/company-register?text=invalid-info";
     }
+    if (company.getPassword().length() < 8 || company.getPassword().length() > 20) {
+      return "redirect:/techJob/company-register?text=invalid-password";
+    }
     if (!company.getPassword().equals(company.getRePassword())) {
       return "redirect:/techJob/company-register?text=password-not-match";
     }
@@ -290,6 +304,9 @@ public class CommonController {
         case "apply-success":
           notification.setText(
               "Đăng ký ứng tuyển thành công <br> Xin hãy chờ phía Công ty liên hệ với bạn");
+          break;
+        case "over-deadline":
+          notification.setText("Đã quá thời hạn nộp đơn ứng tuyển");
           break;
         case "cv-none":
           notification.setText(

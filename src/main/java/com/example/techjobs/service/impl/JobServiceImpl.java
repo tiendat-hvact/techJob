@@ -7,6 +7,7 @@ import com.example.techjobs.dto.inputDTO.InputJobDTO;
 import com.example.techjobs.dto.outputDTO.OutputJobDTO;
 import com.example.techjobs.entity.Company;
 import com.example.techjobs.entity.Job;
+import com.example.techjobs.repository.ApplyRepository;
 import com.example.techjobs.repository.CompanyRepository;
 import com.example.techjobs.repository.JobRepository;
 import com.example.techjobs.service.JobService;
@@ -17,19 +18,23 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class JobServiceImpl implements JobService {
 
   private final CompanyRepository companyRepository;
+  private final ApplyRepository applyRepository;
   private final JobRepository jobRepository;
   private final GenericMapper genericMapper;
 
   public JobServiceImpl(
       CompanyRepository companyRepository,
+      ApplyRepository applyRepository,
       JobRepository jobRepository,
       GenericMapper genericMapper) {
     this.companyRepository = companyRepository;
+    this.applyRepository = applyRepository;
     this.jobRepository = jobRepository;
     this.genericMapper = genericMapper;
   }
@@ -46,13 +51,33 @@ public class JobServiceImpl implements JobService {
   @Override
   public List<OutputJobDTO> findLimit(Integer limit) {
     Page<Job> jobs =
-        jobRepository.findAllAndStateNot(
+        jobRepository.findAllByStateNot(
             StateConstant.DELETED.name(),
             PageRequest.of(0, limit, Sort.by(Direction.DESC, "createDate")));
     return genericMapper.mapToListOfType(jobs.getContent(), OutputJobDTO.class);
   }
 
   @Override
+  public Page<OutputJobDTO> getPageableJobByCompanyId(
+      Integer companyId, Integer page, Integer size) {
+    Page<Job> jobs =
+        jobRepository.findAllByCompanyIdAndStateNot(
+            companyId,
+            StateConstant.DELETED.name(),
+            PageRequest.of(page - 1, size, Sort.by(Direction.DESC, "createDate")));
+    Page<OutputJobDTO> outputJobDTOS =
+        genericMapper.toPage(
+            jobs,
+            OutputJobDTO.class,
+            PageRequest.of(page - 1, size, Sort.by(Direction.DESC, "createdDate")));
+    if (outputJobDTOS != null && !outputJobDTOS.isEmpty()) {
+      outputJobDTOS.forEach(i -> i.setNumberApply(applyRepository.countNumberApply(i.getId())));
+    }
+    return outputJobDTOS;
+  }
+
+  @Override
+  @Transactional
   public Integer createJob(Integer companyId, InputJobDTO data) {
     Company company =
         companyRepository.findByIdAndStateNot(companyId, StateConstant.DELETED.name()).orElse(null);
@@ -68,5 +93,35 @@ public class JobServiceImpl implements JobService {
       return job.getId();
     }
     return 0;
+  }
+
+  @Override
+  @Transactional
+  public boolean updateJob(Integer jobId, InputJobDTO data) {
+    Job jobDuplicatedName =
+        jobRepository
+            .findByIdNotAndNameAndStateNot(jobId, data.getName(), StateConstant.DELETED.name())
+            .orElse(null);
+    Job job = jobRepository.findByIdAndStateNot(jobId, StateConstant.DELETED.name()).orElse(null);
+    if (jobDuplicatedName == null && job != null) {
+      genericMapper.copyNonNullProperties(data, job);
+      job.setUpdateDate(LocalDate.now());
+      jobRepository.save(job);
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  @Transactional
+  public boolean deleteJob(Integer jobId) {
+    Job job = jobRepository.findByIdAndStateNot(jobId, StateConstant.DELETED.name()).orElse(null);
+    if (job != null) {
+      job.setState(StateConstant.DELETED.name());
+      job.setUpdateDate(LocalDate.now());
+      jobRepository.save(job);
+      return true;
+    }
+    return false;
   }
 }

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>TechJobs</title>
+  <title>Đăng tin tuyển dụng</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
 
   <!-- Roboto Fonts -->
@@ -83,10 +83,12 @@
         <a class="nav-link" href="/techJob/company/get-form-create-job">Đăng tin tuyển dụng</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Quản lý tin tuyển dụng</a>
+        <a class="nav-link" href="/techJob/company/job-management/page/1">Quản lý tin tuyển dụng</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Quản lý người ứng tuyển</a>
+        <a class="nav-link" href="/techJob/company/candidate-management/page/1">
+          Quản lý người ứng tuyển
+        </a>
       </li>
     </ul>
   </div>
@@ -148,7 +150,8 @@
                     <label class="col-sm-3 col-form-label text-right label">Số lượng cần
                       tuyển</label>
                     <div class="col-sm-9">
-                      <input class="form-control" placeholder="Chọn số lượng" min="1" th:field="*{numberRecruit}"
+                      <input class="form-control" min="1" placeholder="Chọn số lượng"
+                             th:field="*{numberRecruit}"
                              type="number">
                     </div>
                   </div>

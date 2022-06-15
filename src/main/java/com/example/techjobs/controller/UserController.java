@@ -43,7 +43,7 @@ public class UserController {
   public String userFindById(
       Model model,
       @ModelAttribute(name = "notification") NotificationRequest notification,
-      @CookieValue(name = "user", defaultValue = "0") int userId) {
+      @CookieValue(name = "user", defaultValue = "0") Integer userId) {
     if (userId == 0) {
       return "redirect:/techJob/login?text=unauthorized";
     }
@@ -72,7 +72,7 @@ public class UserController {
 
   @PostMapping("/update-info")
   public String userUpdate(
-      @CookieValue(name = "user", defaultValue = "0") int userId,
+      @CookieValue(name = "user", defaultValue = "0") Integer userId,
       @ModelAttribute InputUserDTO data) {
     if (userService.updateUser(userId, data)) {
       return "redirect:/techJob/user";
@@ -83,7 +83,7 @@ public class UserController {
 
   @GetMapping("/apply-job/{id}")
   public String applyJob(
-      @CookieValue(name = "user", defaultValue = "0") int userId,
+      @CookieValue(name = "user", defaultValue = "0") Integer userId,
       @PathVariable(name = "id") Integer jobId) {
     Integer result = applyService.applyJob(jobId, userId);
     if (result == 0) {
@@ -91,10 +91,12 @@ public class UserController {
     } else if (result == 1) {
       return "redirect:/techJob?text=job-not-found";
     } else if (result == 2) {
-      return "redirect:/techJob/login?text=unauthorized";
+      return "redirect:/techJob/job/" + jobId + "?text=over-deadline";
     } else if (result == 3) {
-      return "redirect:/techJob/job/" + jobId + "?text=cv-none";
+      return "redirect:/techJob/login?text=unauthorized";
     } else if (result == 4) {
+      return "redirect:/techJob/job/" + jobId + "?text=cv-none";
+    } else if (result == 5) {
       return "redirect:/techJob/job/" + jobId + "?text=apply-existed";
     } else {
       return "redirect:/techJob/job/" + jobId + "?text=apply-fail";

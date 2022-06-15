@@ -62,4 +62,17 @@ public class GenericMapper {
     String[] result = new String[emptyNames.size()];
     return emptyNames.toArray(result);
   }
+
+  public <S, T> Page<T> toPage(Page<S> source, Class<T> targetClass, Pageable pageable) {
+    if (source == null || source.isEmpty()) {
+      return null;
+    }
+    modelMapper.getConfiguration().setAmbiguityIgnored(true);
+    return new PageImpl<>(
+        source.stream()
+            .map(item -> modelMapper.map(item, targetClass))
+            .collect(Collectors.toList()),
+        pageable,
+        source.getTotalElements());
+  }
 }

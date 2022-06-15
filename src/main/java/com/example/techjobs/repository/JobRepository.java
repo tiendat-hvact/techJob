@@ -5,13 +5,14 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 public interface JobRepository extends JpaRepository<Job, Integer> {
 
-  Optional<Job> findByIdAndStateNot(Integer jobId, String name);
+  Optional<Job> findByIdAndStateNot(Integer jobId, String stateNot);
 
-  @Query(value = "SELECT j FROM Job j WHERE j.state <> :stateNot")
-  Page<Job> findAllAndStateNot(@Param(value = "stateNot") String stateNot, Pageable pageable);
+  Optional<Job> findByIdNotAndNameAndStateNot(Integer jobId, String name, String stateNot);
+
+  Page<Job> findAllByStateNot(String stateNot, Pageable pageable);
+
+  Page<Job> findAllByCompanyIdAndStateNot(Integer companyId, String stateNot, Pageable pageable);
 }

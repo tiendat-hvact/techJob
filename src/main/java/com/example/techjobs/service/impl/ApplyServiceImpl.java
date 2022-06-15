@@ -13,6 +13,7 @@ import com.example.techjobs.repository.UserRepository;
 import com.example.techjobs.service.ApplyService;
 import com.example.techjobs.service.EmailService;
 import java.time.LocalDate;
+import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,14 +44,15 @@ public class ApplyServiceImpl implements ApplyService {
   public Integer applyJob(Integer jobId, Integer userId) {
     Job job = jobRepository.findByIdAndStateNot(jobId, StateConstant.DELETED.name()).orElse(null);
     if (job == null) return 1;
+    if (job.getDeadline().isBefore(LocalDate.now())) return 2;
     User user =
         userRepository.findByIdAndStateNot(userId, StateConstant.DELETED.name()).orElse(null);
-    if (user == null) return 2;
+    if (user == null) return 3;
     File file = fileRepository.findByUserId(userId).orElse(null);
-    if (file == null) return 3;
+    if (file == null) return 4;
     ApplyId applyId = new ApplyId(userId, jobId);
     Apply apply = applyRepository.findById(applyId).orElse(null);
-    if (apply != null) return 4;
+    if (apply != null) return 5;
     apply = new Apply(applyId, user, job, LocalDate.now());
     applyRepository.save(apply);
     emailService.sendEmailNotifyJobApplied(

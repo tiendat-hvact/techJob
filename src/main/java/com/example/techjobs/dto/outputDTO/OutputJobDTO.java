@@ -25,4 +25,5 @@ public class OutputJobDTO {
   private LocalDate updateDate;
   private OutputCompanyDTO company;
   private Type type;
+  private Integer numberApply;
 }

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Hồ sơ quản trị viên</title>
+  <title>Quản lý tin tuyển dụng</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
 
   <!-- Roboto Fonts -->
@@ -35,7 +35,6 @@
 <div class="container-fluid fluid-nav another-page">
   <div class="container cnt-tnar">
     <nav class="navbar navbar-expand-lg navbar-light bg-light tjnav-bar">
-      <!-- <a class="navbar-brand" href="#">Navbar</a> -->
       <a class="nav-logo" href="/">
         <img src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653292015/system/logo_02.png">
       </a>
@@ -71,26 +70,26 @@
 
 <!-- recuiter Nav -->
 <nav class="navbar navbar-expand-lg navbar-light nav-recuitment">
-  <button aria-controls="navbarNava" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler"
+  <button aria-controls="navbarNava" aria-expanded="false" aria-label="Toggle navigation"
+          class="navbar-toggler"
           data-target="#navbarNava" data-toggle="collapse" type="button">
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse container" id="navbarNava">
     <ul class="navbar-nav nav-recuitment-li">
       <li class="nav-item active">
-        <a class="nav-link" href="/techJob/admin">Quản lý hồ sơ</a>
+        <a class="nav-link" href="/techJob/company">Quản lý hồ sơ</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Quản lý nhà tuyển dụng</a>
+        <a class="nav-link" href="/techJob/company/get-form-create-job">Đăng tin tuyển dụng</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Quản lý người tìm việc</a>
+        <a class="nav-link" href="/techJob/company/job-management/page/1">Quản lý tin tuyển dụng</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Quản lý tin tuyển dụng</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Quản lý ngành nghề</a>
+        <a class="nav-link" href="/techJob/company/candidate-management/page/1">
+          Quản lý người ứng tuyển
+        </a>
       </li>
     </ul>
   </div>
@@ -118,117 +117,83 @@
 <div class="container-fluid published-recuitment-wrapper">
   <div class="container published-recuitment-content">
     <div class="row">
-      <div class="col-md-8 col-sm-12 col-12 recuitment-inner">
-        <form class="employee-form" enctype="multipart/form-data" method="post"
-              th:action="@{/techJob/admin/update-info}" th:object="${admin}">
-          <div class="accordion" id="accordionExample">
-            <div class="card recuitment-card">
-              <div class="card-header recuitment-card-header" id="headingOne">
-                <h2 class="mb-0">
-                  <a aria-controls="collapseOne" aria-expanded="true"
-                     class="btn btn-link btn-block text-left recuitment-header"
-                     data-target="#collapseOne" data-toggle="collapse"
-                     type="button">
-                    Thông tin tài khoản
-                    <span class="clicksd" id="clickc1_advance2">
-                      <i class="fa fa fa-angle-up"></i>
-                    </span>
-                  </a>
-                </h2>
-              </div>
-
-              <div aria-labelledby="headingOne" class="collapse show"
-                   data-parent="#accordionExample"
-                   id="collapseOne">
-                <div class="card-body recuitment-body row">
-                  <div class="col-md-3">
-                    <div class="avatar-upload">
-                      <div class="avatar-edit">
-                        <input accept=".png, .jpg, .jpeg" id="imageUpload" th:field="*{fileAvatar}"
-                               type='file'/>
-                        <label for="imageUpload"></label>
-                      </div>
-                      <div class="avatar-preview">
-                        <div id="imagePreview"
-                             th:style="'background-image:url(' + ${avatar} + ');'">
-                        </div>
-                      </div>
+      <div class="col-md-8 col-sm-12 col-12">
+        <div class="job-board-wrap" style="background: none">
+          <div class="job-group">
+            <div class="job pagi">
+              <div class="job-content"
+                   style="border: 2px solid black; border-radius: 1rem; background-color: white; margin-bottom: 1rem"
+                   th:each="item : ${jobs}">
+                <div class="job-desc" style="width: 100%">
+                  <div class="job-title">
+                    <h4 th:text="${item.name}"></h4>
+                  </div>
+                  <div class="d-flex justify-content-between" style="margin: 1rem 0">
+                    <div class="job-inf">
+                      <i aria-hidden="true" class="fa fa-envelope-o"></i>
+                      <span style="margin-left: 0.5rem"
+                            th:text="'Ngày đăng: ' + ${#temporals.format(item.createDate, 'dd-MM-yyyy')}"></span>
+                    </div>
+                    <div class="job-inf">
+                      <i aria-hidden="true" class="fa fa-phone"></i>
+                      <span style="margin-left: 0.7rem"
+                            th:text="'Hạn nộp: ' + ${#temporals.format(item.deadline, 'dd-MM-yyyy')}"></span>
+                    </div>
+                    <div class="job-inf">
+                      <i aria-hidden="true" class="fa fa-map-marker"></i>
+                      <span style="margin-left: 0.9rem"
+                            th:text="'Số người ứng tuyển: ' + ${item.numberApply} + ' người'"></span>
                     </div>
                   </div>
-                  <div class="col-md-9">
-                    <div class="form-group row">
-                      <label class="col-sm-3 col-form-label text-right label">Họ tên</label>
-                      <div class="col-sm-9">
-                        <input class="form-control" placeholder="Nhập họ và tên" th:field="*{name}"
-                               type="text">
-                      </div>
-                    </div>
-
-                    <div class="form-group row">
-                      <label class="col-sm-3 col-form-label text-right label">Giới tính</label>
-                      <div class="col-sm-9">
-                        <select class="form-control" id="jobGender" th:field="*{sex}" type="text">
-                          <option value="">Chọn giới tính</option>
-                          <option th:value="Male">Nam</option>
-                          <option th:value="Female">Nữ</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div class="form-group row">
-                      <label class="col-sm-3 col-form-label text-right label">Ngày sinh</label>
-                      <div class="col-sm-9">
-                        <input class="form-control" th:field="*{dob}" type="date">
-                      </div>
-                    </div>
-                    <div class="form-group row">
-                      <label class="col-sm-3 col-form-label text-right label">Email</label>
-                      <div class="col-sm-9">
-                        <input class="form-control" th:field="*{email}" type="text">
-                      </div>
-                    </div>
-                    <div class="form-group row">
-                      <label class="col-sm-3 col-form-label text-right label">Số điện thoại</label>
-                      <div class="col-sm-9">
-                        <input class="form-control" th:field="*{phone}" type="text">
-                      </div>
-                    </div>
-                    <div class="form-group row">
-                      <label class="col-sm-3 col-form-label text-right label">Chỗ ở hiện tại</label>
-                      <div class="col-sm-9">
-                        <input class="form-control" placeholder="Nhập địa chỉ" th:field="*{address}"
-                               type="text">
-                      </div>
-                    </div>
+                  <div class="d-flex justify-content-around">
+                    <a class="btn btn-primary"
+                       style="color: white"
+                       th:href="@{/techJob/company/get-form-update-job/{id} (id = ${item.id})}"
+                       type="button">
+                      Xem tin tuyển dụng
+                    </a>
+                    <a class="btn btn-primary"
+                       style="color: white"
+                       th:href="@{/techJob/company/candidate-management/page/1 (jobId = ${item.id})}"
+                       type="button">
+                      Xem người ứng tuyển
+                    </a>
                   </div>
-
                 </div>
               </div>
             </div>
-          </div>
 
-          <div class="rec-submit">
-            <button class="btn-submit-recuitment mb-3 ml-3" name="" type="submit">
-              <i class="fa fa-floppy-o pr-2"></i>Lưu Hồ Sơ
-            </button>
           </div>
-        </form>
+          <nav aria-label="Page navigation example" th:if="${page} > 1">
+            <ul class="pagination d-flex justify-content-center">
+              <li class="page-item" style="background: white">
+                <a aria-label="Previous" class="page-link" onclick="checkBehind()"
+                   th:href="@{/techJob/company/job-management/page/{pageId}(pageId = ${pageId - 1})}">
+                  <span aria-hidden="true">&laquo;</span>
+                  <span class="sr-only">Previous</span>
+                </a>
+              </li>
+              <li class="page-item d-flex" style="background: white">
+                <a class="page-link" th:each="item : ${stt}"
+                   th:href="@{/techJob/company/job-management/page/{pageId}(pageId = ${item})}"
+                   th:text="${item}"></a>
+              </li>
+              <li class="page-item" style="background: white">
+                <a aria-label="Next" class="page-link" onclick="checkForward()"
+                   th:href="@{/techJob/company/job-management/page/{pageId}(pageId = ${pageId + 1})}">
+                  <span aria-hidden="true">&raquo;</span>
+                  <span class="sr-only">Next</span>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
 
       </div>
       <!-- Side bar -->
       <div class="col-md-4 col-sm-12 col-12">
-        <div class="recuiter-info">
-          <div class="recuiter-info-avt">
-            <img th:src="${avatar}">
-          </div>
-          <div class="clearfix list-rec">
-            <h4 th:text="${admin.name}"></h4>
-            <ul>
-              <li><a href="#">Nhà tuyển dụng đang theo dõi <strong>(0)</strong></a></li>
-              <li><a href="#">Việc làm đang theo dõi <strong>(450)</strong></a></li>
-              <li><a href="#">Việc làm đã nộp cv <strong>(1150)</strong></a></li>
-            </ul>
-          </div>
-        </div>
+        <img class="advertisement"
+             src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1652924509/system/image_01.jpg">
       </div>
     </div>
   </div>
@@ -260,18 +225,18 @@
         </h2>
         <ul class="footer-contact">
           <li>
-            <a>
+            <a href="#">
               <i class="fa fa-phone fticn"></i> +123 456 7890
             </a>
           </li>
           <li>
-            <a>
+            <a href="#">
               <i class="fa fa-envelope fticn"></i>
               hello@123.com
             </a>
           </li>
           <li>
-            <a>
+            <a href="#">
               <i class="fa fa-map-marker fticn"></i>
               33 Xô Viết Nghệ Tĩnh, Đà Nẵng
             </a>
@@ -330,13 +295,14 @@
 <footer class="container-fluid copyright-wrap">
   <div class="container copyright">
     <p class="copyright-content">
-      Copyright © 2020 <a href="/"> Tech<b>Job</b></a>. All Right Reserved.
+      Copyright © 2020 <a href="#"> Tech<b>Job</b></a>. All Right Reserved.
     </p>
   </div>
 </footer>
 
 
 <!-- (end) footer -->
+
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
@@ -348,25 +314,26 @@
 <script src="/js/select2.min.js"></script>
 <script src="/js/jobdata.js"></script>
 
-<script src="js/main.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
 <!-- Owl Stylesheets Javascript -->
-<script src="js/owlcarousel/owl.carousel.js"></script>
+<script src="/js/owlcarousel/owl.carousel.js"></script>
 <!-- Read More Plugin -->
+
 <script type="text/javascript">
-  // Avatar upload and preview
-  function readURL(input) {
-    if (input.files && input.files[0]) {
-      var reader = new FileReader();
-      reader.onload = function (e) {
-        $('#imagePreview').css('background-image', 'url(' + e.target.result + ')');
-      }
-      reader.readAsDataURL(input.files[0]);
+  const page = [[${page}]];
+  const pageId = [[${pageId}]];
+
+  function checkForward() {
+    if (pageId + 1 > page) {
+      event.preventDefault();
     }
   }
 
-  $("#imageUpload").change(function () {
-    readURL(this);
-  });
+  function checkBehind() {
+    if (pageId - 1 <= 0) {
+      event.preventDefault();
+    }
+  }
 
   $("#notification").click(function () {
     $("#notification").hide();

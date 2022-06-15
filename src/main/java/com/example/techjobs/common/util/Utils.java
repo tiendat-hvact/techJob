@@ -1,6 +1,8 @@
 package com.example.techjobs.common.util;
 
 import java.text.Normalizer;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.RandomStringUtils;
 
@@ -31,5 +33,14 @@ public class Utils {
   /** Hàm chuẩn hóa tên file */
   public static Boolean isNullOrEmpty(String str) {
     return str == null || str.trim().equals("");
+  }
+
+  /** Hàm lấy ra số trang */
+  public static List<Integer> getListNumberPage(int page) {
+    List<Integer> stt = new ArrayList<>();
+    for (int i = 1; i <= page; i++) {
+      stt.add(i);
+    }
+    return stt;
   }
 }

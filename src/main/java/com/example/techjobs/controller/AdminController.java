@@ -31,7 +31,7 @@ public class AdminController {
   public String userFindById(
       Model model,
       @ModelAttribute(name = "notification") NotificationRequest notification,
-      @CookieValue(name = "admin") int adminId) {
+      @CookieValue(name = "admin") Integer adminId) {
     if (adminId != 0) {
       return "redirect:/techJob/login?text=unauthorized";
     }
@@ -55,7 +55,7 @@ public class AdminController {
 
   @PostMapping("/update-info")
   public String userUpdate(
-      @CookieValue(name = "admin") int adminId, @ModelAttribute InputUserDTO data) {
+      @CookieValue(name = "admin") Integer adminId, @ModelAttribute InputUserDTO data) {
     if (userService.updateUser(adminId, data)) {
       return "redirect:/techJob/admin";
     } else {
