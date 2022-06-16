@@ -1,0 +1,65 @@
+package com.example.techjobs.repository.impl;
+
+import com.example.techjobs.common.enums.StateConstant;
+import com.example.techjobs.common.util.Utils;
+import com.example.techjobs.dto.SearchRequest;
+import com.example.techjobs.entity.Job;
+import com.example.techjobs.repository.JobRepository;
+import java.time.LocalDate;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Component;
+
+@Component
+public class JobRepositoryImpl implements JobRepository {
+
+  @PersistenceContext EntityManager entityManager;
+
+  @Override
+  public Page<Job> getPageableJobByCondition(
+      SearchRequest searchRequest, String stateNot, Pageable pageable) {
+    String sql = "SELECT j FROM Job j WHERE j.state <> '" + StateConstant.DELETED.name() + "'";
+    if (searchRequest.getCompanyId() != null) {
+      sql += " AND j.company.id = " + searchRequest.getCompanyId();
+    }
+    if (searchRequest.getName() != null && !Utils.isNullOrEmpty(searchRequest.getName())) {
+      sql += "AND j.name LIKE '%" + searchRequest.getName() + "%'";
+    }
+    if (searchRequest.getCreateDate() != null
+        && searchRequest.getCreateDate().getFromDate() != null
+        && searchRequest.getCreateDate().getToDate() != null) {
+      sql +=
+          " AND j.createDate BETWEEN '"
+              + searchRequest.getCreateDate().getFromDate()
+              + "' AND '"
+              + searchRequest.getCreateDate().getToDate()
+              + "'";
+    }
+    if (searchRequest.getDeadLine() != null
+        && searchRequest.getDeadLine().getFromDate() != null
+        && searchRequest.getDeadLine().getToDate() != null) {
+      sql +=
+          " AND j.createDate BETWEEN '"
+              + searchRequest.getDeadLine().getFromDate()
+              + "' AND '"
+              + searchRequest.getDeadLine().getToDate()
+              + "'";
+    }
+    if (searchRequest.getState() != null && !Utils.isNullOrEmpty(searchRequest.getState())) {
+      if (searchRequest.getState().equals("beforeDeadline")) {
+        sql += "AND j.deadline > '" + LocalDate.now() + "'";
+      } else {
+        sql += "AND j.deadline <= '" + LocalDate.now() + "'";
+      }
+    }
+    System.out.println(sql);
+    Query query = entityManager.createQuery(sql, Job.class);
+    List<Job> jobs = query.getResultList();
+    return new PageImpl<>(jobs, pageable, jobs.size());
+  }
+}

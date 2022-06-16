@@ -15,7 +15,7 @@ import com.example.techjobs.dto.inputDTO.InputFileDTO;
 import com.example.techjobs.dto.inputDTO.InputUserDTO;
 import com.example.techjobs.dto.outputDTO.OutputUserDTO;
 import com.example.techjobs.entity.User;
-import com.example.techjobs.repository.UserRepository;
+import com.example.techjobs.repository.UserJpaRepository;
 import com.example.techjobs.service.FileService;
 import com.example.techjobs.service.UserService;
 import java.time.LocalDate;
@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,7 +34,7 @@ public class UserServiceImpl implements UserService {
   private final Cloudinary cloudinary;
   private final FileService fileService;
   private final GenericMapper genericMapper;
-  private final UserRepository userRepository;
+  private final UserJpaRepository userJpaRepository;
   private final EmailServiceImpl emailService;
   private final AttributeEncryptor attributeEncryptor;
 
@@ -44,13 +43,13 @@ public class UserServiceImpl implements UserService {
       Cloudinary cloudinary,
       FileService fileService,
       GenericMapper genericMapper,
-      UserRepository userRepository,
+      UserJpaRepository userJpaRepository,
       EmailServiceImpl emailService,
       AttributeEncryptor attributeEncryptor) {
     this.cloudinary = cloudinary;
     this.fileService = fileService;
     this.genericMapper = genericMapper;
-    this.userRepository = userRepository;
+    this.userJpaRepository = userJpaRepository;
     this.emailService = emailService;
     this.attributeEncryptor = attributeEncryptor;
   }
@@ -58,7 +57,7 @@ public class UserServiceImpl implements UserService {
   @Override
   public OutputUserDTO findById(Integer userId) {
     User user =
-        userRepository.findByIdAndStateNot(userId, StateConstant.DELETED.name()).orElse(null);
+        userJpaRepository.findByIdAndStateNot(userId, StateConstant.DELETED.name()).orElse(null);
     return genericMapper.mapToType(user, OutputUserDTO.class);
   }
 
@@ -66,19 +65,16 @@ public class UserServiceImpl implements UserService {
   public Map<String, Object> loginAccount(LoginRequest data) {
     Map<String, Object> result = null;
     User user =
-        userRepository
+        userJpaRepository
             .findByEmailAndStateNot(data.getEmail(), StateConstant.DELETED.name())
             .orElse(null);
-    if (user != null) {
-      if ( 1 == 1 || attributeEncryptor.matches(data.getPassword(), user.getPassword())) {
-        result = new HashMap<>();
-        result.put("accountId", user.getId());
-        result.put("role", user.getRole());
-        if (user.getState().equals(StateConstant.WAIT.name())) {
-          result.put("verify", false);
-        } else {
-          result.put("verify", true);
-        }
+    if (user != null && attributeEncryptor.matches(data.getPassword(), user.getPassword())) {
+      result = new HashMap<>();
+      result.put("accountId", user.getId());
+      if (user.getState().equals(StateConstant.WAIT.name())) {
+        result.put("verify", false);
+      } else {
+        result.put("verify", true);
       }
     }
     return result;
@@ -87,13 +83,11 @@ public class UserServiceImpl implements UserService {
   @Override
   public Boolean checkVerifyCode(Integer accountId, String verifyCode) {
     User user =
-        userRepository
-            .findByIdAndStateNot(accountId, StateConstant.DELETED.name())
-            .orElse(null);
+        userJpaRepository.findByIdAndStateNot(accountId, StateConstant.DELETED.name()).orElse(null);
     if (user != null && attributeEncryptor.matches(verifyCode, user.getVerifyCode())) {
       user.setState(StateConstant.ACTIVE.name());
       user.setUpdateDate(LocalDate.now());
-      userRepository.save(user);
+      userJpaRepository.save(user);
       return true;
     }
     return false;
@@ -104,7 +98,7 @@ public class UserServiceImpl implements UserService {
   @SneakyThrows
   public boolean createUser(InputUserDTO data) {
     User user =
-        userRepository
+        userJpaRepository
             .findByEmailAndStateNot(data.getEmail(), StateConstant.DELETED.name())
             .orElse(null);
     if (user == null) {
@@ -120,7 +114,7 @@ public class UserServiceImpl implements UserService {
       user.setUpdateBy("unknow");
       user.setUpdateDate(LocalDate.now());
       emailService.sendEmailVerifyCode(data.getEmail(), verifyCode);
-      userRepository.save(user);
+      userJpaRepository.save(user);
       return true;
     }
     return false;
@@ -131,11 +125,11 @@ public class UserServiceImpl implements UserService {
   @SneakyThrows
   public boolean updateUser(Integer userId, InputUserDTO data) {
     User userDuplicatedEmail =
-        userRepository
+        userJpaRepository
             .findByIdNotAndEmailAndStateNot(userId, data.getEmail(), StateConstant.DELETED.name())
             .orElse(null);
     User user =
-        userRepository.findByIdAndStateNot(userId, StateConstant.DELETED.name()).orElse(null);
+        userJpaRepository.findByIdAndStateNot(userId, StateConstant.DELETED.name()).orElse(null);
     if (userDuplicatedEmail == null && user != null) {
       genericMapper.copyNonNullProperties(data, user);
       String name = Utils.formatFileName(user.getEmail()) + "_" + System.currentTimeMillis();
@@ -177,7 +171,7 @@ public class UserServiceImpl implements UserService {
         fileService.createOrUpdateFile(userId, dataFile);
       }
       user.setUpdateDate(LocalDate.now());
-      userRepository.save(user);
+      userJpaRepository.save(user);
       return true;
     }
     return false;
@@ -185,18 +179,19 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public List<User> findAll() {
-    return this.userRepository.findActiveUser();
+    return this.userJpaRepository.findAllByRoleAndStateNot(
+        RoleConstant.USER.name(), StateConstant.DELETED.name());
   }
 
   @Override
-  public ResultDTO delete(Integer id) {
-    Optional<User> userOPT = this.userRepository.findById(id);
-    if (!userOPT.isPresent()) {
-      return new ResultDTO(null, true, "Không tìm thấy user");
+  public ResultDTO<User> delete(Integer id) {
+    Optional<User> userOPT = this.userJpaRepository.findById(id);
+    if (userOPT.isEmpty()) {
+      return new ResultDTO<>(null, true, "Không tìm thấy user");
     }
     User user = userOPT.get();
     user.setState(StateConstant.DELETED.name());
-    this.userRepository.save(user);
-    return new ResultDTO(null, false, "Xóa user thành công");
+    this.userJpaRepository.save(user);
+    return new ResultDTO<>(null, false, "Xóa user thành công");
   }
 }

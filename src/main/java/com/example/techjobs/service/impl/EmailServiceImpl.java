@@ -3,10 +3,11 @@ package com.example.techjobs.service.impl;
 import com.example.techjobs.common.encryptor.AttributeEncryptor;
 import com.example.techjobs.common.enums.RoleConstant;
 import com.example.techjobs.entity.User;
-import com.example.techjobs.repository.UserRepository;
+import com.example.techjobs.repository.UserJpaRepository;
 import com.example.techjobs.service.EmailService;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 import javax.mail.internet.MimeMessage;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,16 +21,16 @@ public class EmailServiceImpl implements EmailService {
 
   private final AttributeEncryptor attributeEncryptor;
   private final JavaMailSender javaMailSender;
-  private final UserRepository userRepository;
+  private final UserJpaRepository userJpaRepository;
 
   @Autowired
   public EmailServiceImpl(
       AttributeEncryptor attributeEncryptor,
       JavaMailSender javaMailSender,
-      UserRepository userRepository) {
+      UserJpaRepository userJpaRepository) {
     this.attributeEncryptor = attributeEncryptor;
     this.javaMailSender = javaMailSender;
-    this.userRepository = userRepository;
+    this.userJpaRepository = userJpaRepository;
   }
 
   @SneakyThrows
@@ -91,10 +92,10 @@ public class EmailServiceImpl implements EmailService {
   protected void sendEmail(String email, String htmlMsg) {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
-    User admin = userRepository.findByRole(RoleConstant.ADMIN.name()).orElse(null);
+    User admin = userJpaRepository.findByRole(RoleConstant.ADMIN.name()).orElse(null);
 
     JavaMailSenderImpl jMailSender = (JavaMailSenderImpl) javaMailSender;
-    jMailSender.setUsername(admin.getEmail());
+    jMailSender.setUsername(Objects.requireNonNull(admin).getEmail());
     jMailSender.setPassword(attributeEncryptor.convertToEntityAttribute(admin.getPassword()));
 
     MimeMessage message = javaMailSender.createMimeMessage();

@@ -1,6 +1,7 @@
 package com.example.techjobs.controller.admin;
 
 import com.example.techjobs.dto.ResultDTO;
+import com.example.techjobs.entity.Job;
 import com.example.techjobs.service.JobService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,30 +16,37 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("/techJob/admin/jobs")
 public class AdminJobController {
 
-    @Autowired
-    private JobService jobService;
+  private final JobService jobService;
 
-    @GetMapping
-    public String index(Model model, @CookieValue(name = "admin", defaultValue = "-1") Integer adminId) {
-        if (adminId != 0) {
-            return "redirect:/techJob/login?text=unauthorized";
-        }
-        model.addAttribute("jobs", this.jobService.findAll());
-        return "admin/jobs/index";
+  @Autowired
+  public AdminJobController(JobService jobService) {
+    this.jobService = jobService;
+  }
+
+  @GetMapping
+  public String index(
+      Model model, @CookieValue(name = "admin", defaultValue = "-1") Integer adminId) {
+    if (adminId != 0) {
+      return "redirect:/techJob/login?text=unauthorized";
     }
+    model.addAttribute("jobs", this.jobService.findAll());
+    return "admin/jobs/index";
+  }
 
-    @GetMapping("/delete/{id}")
-    public String onDelete(@PathVariable Integer id, RedirectAttributes redirectAttributes, @CookieValue(name = "admin", defaultValue = "-1") Integer adminId) {
-        if (adminId != 0) {
-            return "redirect:/techJob/login?text=unauthorized";
-        }
-        ResultDTO result = this.jobService.delete(id);
-        if (result.isError()) {
-            redirectAttributes.addFlashAttribute("error", result.getMessage());
-        } else {
-            redirectAttributes.addFlashAttribute("success", result.getMessage());
-        }
-        return "redirect:/techJob/admin/jobs";
+  @GetMapping("/delete/{id}")
+  public String onDelete(
+      @PathVariable Integer id,
+      RedirectAttributes redirectAttributes,
+      @CookieValue(name = "admin", defaultValue = "-1") Integer adminId) {
+    if (adminId != 0) {
+      return "redirect:/techJob/login?text=unauthorized";
     }
-
+    ResultDTO<Job> result = this.jobService.delete(id);
+    if (result.isError()) {
+      redirectAttributes.addFlashAttribute("error", result.getMessage());
+    } else {
+      redirectAttributes.addFlashAttribute("success", result.getMessage());
+    }
+    return "redirect:/techJob/admin/jobs";
+  }
 }

@@ -1,6 +1,8 @@
 package com.example.techjobs.controller.admin;
 
 import com.example.techjobs.dto.ResultDTO;
+import com.example.techjobs.entity.Company;
+import com.example.techjobs.entity.User;
 import com.example.techjobs.service.CompanyService;
 import com.example.techjobs.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,47 +18,57 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("/techJob/admin/user")
 public class AdminUserController {
 
-    @Autowired
-    private CompanyService companyService;
+  private final CompanyService companyService;
+  private final UserService userService;
 
-    @Autowired
-    private UserService userService;
+  @Autowired
+  public AdminUserController(CompanyService companyService, UserService userService) {
+    this.companyService = companyService;
+    this.userService = userService;
+  }
 
-    @GetMapping
-    public String index(Model model, @CookieValue(name = "admin", defaultValue = "-1") Integer adminId) {
-        if (adminId != 0) {
-            return "redirect:/techJob/login?text=unauthorized";
-        }
-        model.addAttribute("companies", this.companyService.findAll());
-        model.addAttribute("users", this.userService.findAll());
-        return "admin/user/index";
+  @GetMapping
+  public String index(
+      Model model, @CookieValue(name = "admin", defaultValue = "-1") Integer adminId) {
+    if (adminId != 0) {
+      return "redirect:/techJob/login?text=unauthorized";
     }
+    model.addAttribute("companies", this.companyService.findAll());
+    model.addAttribute("users", this.userService.findAll());
+    return "admin/user/index";
+  }
 
-    @GetMapping("/delete/{id}")
-    public String onDeleteUser(@PathVariable Integer id, RedirectAttributes redirectAttributes, @CookieValue(name = "admin", defaultValue = "-1") Integer adminId) {
-        if (adminId != 0) {
-            return "redirect:/techJob/login?text=unauthorized";
-        }
-        ResultDTO result = this.userService.delete(id);
-        if (result.isError()) {
-            redirectAttributes.addFlashAttribute("error", result.getMessage());
-        } else {
-            redirectAttributes.addFlashAttribute("success", result.getMessage());
-        }
-        return "redirect:/techJob/admin/user";
+  @GetMapping("/delete/{id}")
+  public String onDeleteUser(
+      @PathVariable Integer id,
+      RedirectAttributes redirectAttributes,
+      @CookieValue(name = "admin", defaultValue = "-1") Integer adminId) {
+    if (adminId != 0) {
+      return "redirect:/techJob/login?text=unauthorized";
     }
+    ResultDTO<User> result = this.userService.delete(id);
+    if (result.isError()) {
+      redirectAttributes.addFlashAttribute("error", result.getMessage());
+    } else {
+      redirectAttributes.addFlashAttribute("success", result.getMessage());
+    }
+    return "redirect:/techJob/admin/user";
+  }
 
-    @GetMapping("/company/delete/{id}")
-    public String onDeleteCompany(@PathVariable Integer id, RedirectAttributes redirectAttributes, @CookieValue(name = "admin", defaultValue = "-1") Integer adminId) {
-        if (adminId != 0) {
-            return "redirect:/techJob/login?text=unauthorized";
-        }
-        ResultDTO result = this.companyService.delete(id);
-        if (result.isError()) {
-            redirectAttributes.addFlashAttribute("error", result.getMessage());
-        } else {
-            redirectAttributes.addFlashAttribute("success", result.getMessage());
-        }
-        return "redirect:/techJob/admin/user";
+  @GetMapping("/company/delete/{id}")
+  public String onDeleteCompany(
+      @PathVariable Integer id,
+      RedirectAttributes redirectAttributes,
+      @CookieValue(name = "admin", defaultValue = "-1") Integer adminId) {
+    if (adminId != 0) {
+      return "redirect:/techJob/login?text=unauthorized";
     }
+    ResultDTO<Company> result = this.companyService.delete(id);
+    if (result.isError()) {
+      redirectAttributes.addFlashAttribute("error", result.getMessage());
+    } else {
+      redirectAttributes.addFlashAttribute("success", result.getMessage());
+    }
+    return "redirect:/techJob/admin/user";
+  }
 }

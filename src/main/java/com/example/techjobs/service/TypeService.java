@@ -3,9 +3,7 @@ package com.example.techjobs.service;
 import com.example.techjobs.dto.ResultDTO;
 import com.example.techjobs.dto.outputDTO.OutputTypeDTO;
 import com.example.techjobs.entity.Type;
-
 import java.util.List;
-import java.util.Map;
 
 public interface TypeService {
 
@@ -14,5 +12,5 @@ public interface TypeService {
 
   ResultDTO<Type> save(Type type);
 
-  ResultDTO delete(Integer id);
+  ResultDTO<Type> delete(Integer id);
 }

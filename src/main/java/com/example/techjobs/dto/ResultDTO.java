@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ResultDTO<T> {
 
-    private T data;
-    private boolean isError;
-    private String message;
+  private T data;
+  private boolean isError;
+  private String message;
 }

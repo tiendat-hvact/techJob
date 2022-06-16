@@ -51,7 +51,8 @@
       </button>
 
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto my-2 my-lg-0 tnav-right tn-nav" th:if="${account == 0 and type == null}">
+        <ul class="navbar-nav mr-auto my-2 my-lg-0 tnav-right tn-nav"
+            th:if="${account == 0 and type == null}">
           <li class="nav-item">
             <a class="nav-link" href="/techJob/user-register">Đăng Ký</a>
           </li>
@@ -136,8 +137,8 @@
                 <div class="row">
                   <div class="col-md-6">
                     <div class="input-group s-input-group">
-                      <input class="form-control sinput" placeholder="Nhập kỹ năng, công việc,..."
-                             type="text" name="name" th:value="${param.name}">
+                      <input class="form-control sinput" name="name"
+                             placeholder="Nhập kỹ năng, công việc,..." th:value="${param.name}" type="text">
                       <span><i class="fa fa-search"></i></span>
                     </div>
                   </div>
@@ -145,10 +146,10 @@
                     <select id="computer-languages" name="typeId">
                       <option hidden selected value="">Chọn ngành nghề</option>
                       <option
-                        th:each="type: ${types}"
-                        th:value="${type.id}"
-                        th:selected="${type.id == currentType}"
-                        th:text="${type.name}"
+                          th:each="type: ${types}"
+                          th:selected="${type.id == currentType}"
+                          th:text="${type.name}"
+                          th:value="${type.id}"
                       />
                     </select>
                     <i aria-hidden="true" class="fa fa-code sfa"></i>
@@ -188,7 +189,8 @@
 
                 <div class="job-desc">
                   <div class="job-title">
-                    <a th:href="@{/techJob/introduce-company/{id} (id = ${item.id})}" th:text="${item.name}"></a>
+                    <a th:href="@{/techJob/introduce-company/{id} (id = ${item.id})}"
+                       th:text="${item.name}"></a>
                   </div>
 
                   <div class="job-inf">
@@ -437,7 +439,8 @@
         <div class="job-inner-over-item">
           <a href="#wrap">
             <div class="thumbnail">
-              <img alt="company logo image" src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
+              <img alt="company logo image"
+                   src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
             </div>
             <div class="content">
               <div class="job-name">
@@ -458,7 +461,8 @@
         <div class="job-inner-over-item">
           <a href="#wrap">
             <div class="thumbnail">
-              <img alt="company logo image" src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
+              <img alt="company logo image"
+                   src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
             </div>
             <div class="content">
               <div class="job-name">
@@ -479,7 +483,8 @@
         <div class="job-inner-over-item">
           <a href="#wrap">
             <div class="thumbnail">
-              <img alt="company logo image" src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
+              <img alt="company logo image"
+                   src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
             </div>
             <div class="content">
               <div class="job-name">
@@ -500,7 +505,8 @@
         <div class="job-inner-over-item">
           <a href="#wrap">
             <div class="thumbnail">
-              <img alt="company logo image" src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
+              <img alt="company logo image"
+                   src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
             </div>
             <div class="content">
               <div class="job-name">
@@ -521,7 +527,8 @@
         <div class="job-inner-over-item">
           <a href="#wrap">
             <div class="thumbnail">
-              <img alt="company logo image" src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
+              <img alt="company logo image"
+                   src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
             </div>
             <div class="content">
               <div class="job-name">
@@ -542,7 +549,8 @@
         <div class="job-inner-over-item">
           <a href="#wrap">
             <div class="thumbnail">
-              <img alt="company logo image" src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
+              <img alt="company logo image"
+                   src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
             </div>
             <div class="content">
               <div class="job-name">
@@ -563,7 +571,8 @@
         <div class="job-inner-over-item">
           <a href="#wrap">
             <div class="thumbnail">
-              <img alt="company logo image" src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
+              <img alt="company logo image"
+                   src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
             </div>
             <div class="content">
               <div class="job-name">
@@ -584,7 +593,8 @@
         <div class="job-inner-over-item">
           <a href="#wrap">
             <div class="thumbnail">
-              <img alt="company logo image" src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
+              <img alt="company logo image"
+                   src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
             </div>
             <div class="content">
               <div class="job-name">
@@ -605,7 +615,8 @@
         <div class="job-inner-over-item">
           <a href="#wrap">
             <div class="thumbnail">
-              <img alt="company logo image" src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
+              <img alt="company logo image"
+                   src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
             </div>
             <div class="content">
               <div class="job-name">
@@ -626,7 +637,8 @@
         <div class="job-inner-over-item">
           <a href="#wrap">
             <div class="thumbnail">
-              <img alt="company logo image" src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
+              <img alt="company logo image"
+                   src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
             </div>
             <div class="content">
               <div class="job-name">
@@ -647,7 +659,8 @@
         <div class="job-inner-over-item">
           <a href="#wrap">
             <div class="thumbnail">
-              <img alt="company logo image" src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
+              <img alt="company logo image"
+                   src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
             </div>
             <div class="content">
               <div class="job-name">
@@ -668,7 +681,8 @@
         <div class="job-inner-over-item">
           <a href="#wrap">
             <div class="thumbnail">
-              <img alt="company logo image" src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
+              <img alt="company logo image"
+                   src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
             </div>
             <div class="content">
               <div class="job-name">
@@ -689,7 +703,8 @@
         <div class="job-inner-over-item">
           <a href="#wrap">
             <div class="thumbnail">
-              <img alt="company logo image" src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
+              <img alt="company logo image"
+                   src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
             </div>
             <div class="content">
               <div class="job-name">
@@ -710,7 +725,8 @@
         <div class="job-inner-over-item">
           <a href="#wrap">
             <div class="thumbnail">
-              <img alt="company logo image" src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
+              <img alt="company logo image"
+                   src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
             </div>
             <div class="content">
               <div class="job-name">
@@ -731,7 +747,8 @@
         <div class="job-inner-over-item">
           <a href="#wrap">
             <div class="thumbnail">
-              <img alt="company logo image" src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
+              <img alt="company logo image"
+                   src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
             </div>
             <div class="content">
               <div class="job-name">
@@ -752,7 +769,8 @@
         <div class="job-inner-over-item">
           <a href="#wrap">
             <div class="thumbnail">
-              <img alt="company logo image" src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
+              <img alt="company logo image"
+                   src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
             </div>
             <div class="content">
               <div class="job-name">
@@ -803,7 +821,8 @@
         <div class="job-inner-over-item">
           <a href="#wrap">
             <div class="thumbnail">
-              <img alt="company logo image" src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
+              <img alt="company logo image"
+                   src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
             </div>
             <div class="content">
               <div class="job-name">
@@ -824,7 +843,8 @@
         <div class="job-inner-over-item">
           <a href="#wrap">
             <div class="thumbnail">
-              <img alt="company logo image" src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
+              <img alt="company logo image"
+                   src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
             </div>
             <div class="content">
               <div class="job-name">
@@ -845,7 +865,8 @@
         <div class="job-inner-over-item">
           <a href="#wrap">
             <div class="thumbnail">
-              <img alt="company logo image" src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
+              <img alt="company logo image"
+                   src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
             </div>
             <div class="content">
               <div class="job-name">
@@ -866,7 +887,8 @@
         <div class="job-inner-over-item">
           <a href="#wrap">
             <div class="thumbnail">
-              <img alt="company logo image" src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
+              <img alt="company logo image"
+                   src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
             </div>
             <div class="content">
               <div class="job-name">
@@ -887,7 +909,8 @@
         <div class="job-inner-over-item">
           <a href="#wrap">
             <div class="thumbnail">
-              <img alt="company logo image" src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
+              <img alt="company logo image"
+                   src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
             </div>
             <div class="content">
               <div class="job-name">
@@ -908,7 +931,8 @@
         <div class="job-inner-over-item">
           <a href="#wrap">
             <div class="thumbnail">
-              <img alt="company logo image" src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
+              <img alt="company logo image"
+                   src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
             </div>
             <div class="content">
               <div class="job-name">
@@ -929,7 +953,8 @@
         <div class="job-inner-over-item">
           <a href="#wrap">
             <div class="thumbnail">
-              <img alt="company logo image" src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
+              <img alt="company logo image"
+                   src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
             </div>
             <div class="content">
               <div class="job-name">
@@ -950,7 +975,8 @@
         <div class="job-inner-over-item">
           <a href="#wrap">
             <div class="thumbnail">
-              <img alt="company logo image" src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
+              <img alt="company logo image"
+                   src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
             </div>
             <div class="content">
               <div class="job-name">
@@ -971,7 +997,8 @@
         <div class="job-inner-over-item">
           <a href="#wrap">
             <div class="thumbnail">
-              <img alt="company logo image" src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
+              <img alt="company logo image"
+                   src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
             </div>
             <div class="content">
               <div class="job-name">
@@ -992,7 +1019,8 @@
         <div class="job-inner-over-item">
           <a href="#wrap">
             <div class="thumbnail">
-              <img alt="company logo image" src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
+              <img alt="company logo image"
+                   src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
             </div>
             <div class="content">
               <div class="job-name">
@@ -1013,7 +1041,8 @@
         <div class="job-inner-over-item">
           <a href="#wrap">
             <div class="thumbnail">
-              <img alt="company logo image" src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
+              <img alt="company logo image"
+                   src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
             </div>
             <div class="content">
               <div class="job-name">
@@ -1034,7 +1063,8 @@
         <div class="job-inner-over-item">
           <a href="#wrap">
             <div class="thumbnail">
-              <img alt="company logo image" src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
+              <img alt="company logo image"
+                   src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
             </div>
             <div class="content">
               <div class="job-name">
@@ -1055,7 +1085,8 @@
         <div class="job-inner-over-item">
           <a href="#wrap">
             <div class="thumbnail">
-              <img alt="company logo image" src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
+              <img alt="company logo image"
+                   src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
             </div>
             <div class="content">
               <div class="job-name">
@@ -1076,7 +1107,8 @@
         <div class="job-inner-over-item">
           <a href="#wrap">
             <div class="thumbnail">
-              <img alt="company logo image" src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
+              <img alt="company logo image"
+                   src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
             </div>
             <div class="content">
               <div class="job-name">
@@ -1097,7 +1129,8 @@
         <div class="job-inner-over-item">
           <a href="#wrap">
             <div class="thumbnail">
-              <img alt="company logo image" src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
+              <img alt="company logo image"
+                   src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
             </div>
             <div class="content">
               <div class="job-name">
@@ -1118,7 +1151,8 @@
         <div class="job-inner-over-item">
           <a href="#wrap">
             <div class="thumbnail">
-              <img alt="company logo image" src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
+              <img alt="company logo image"
+                   src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1653234811/company/unknow_company.png">
             </div>
             <div class="content">
               <div class="job-name">

@@ -1,7 +1,6 @@
 package com.example.techjobs.dto.inputDTO;
 
 import java.time.LocalDate;
-import javax.persistence.criteria.CriteriaBuilder.In;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 

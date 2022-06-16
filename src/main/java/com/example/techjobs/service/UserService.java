@@ -5,7 +5,6 @@ import com.example.techjobs.dto.ResultDTO;
 import com.example.techjobs.dto.inputDTO.InputUserDTO;
 import com.example.techjobs.dto.outputDTO.OutputUserDTO;
 import com.example.techjobs.entity.User;
-
 import java.util.List;
 import java.util.Map;
 
@@ -25,8 +24,8 @@ public interface UserService {
 
   /** Cập nhật tài khoản người tìm việc theo ID */
   boolean updateUser(Integer userId, InputUserDTO data);
-  
+
   List<User> findAll();
 
-  ResultDTO delete(Integer id);
+  ResultDTO<User> delete(Integer id);
 }

@@ -49,10 +49,6 @@
 
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto my-2 my-lg-0 tnav-right tn-nav">
-          <li class="nav-item active">
-            <a class="nav-link" href="#"><i aria-hidden="true" class="fa fa-search"></i> <span
-                class="hidden-text">Tìm kiếm</span></a>
-          </li>
           <li class="nav-item">
             <a class="nav-link" href="/"> Trang chủ </a>
           </li>
@@ -87,7 +83,8 @@
         <a class="nav-link" href="/techJob/company/job-management/page/1">Quản lý tin tuyển dụng</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/techJob/company/candidate-management/page/1">Quản lý người ứng tuyển</a>
+        <a class="nav-link" href="/techJob/company/candidate-management/page/1">Quản lý người ứng
+          tuyển</a>
       </li>
     </ul>
   </div>
@@ -183,9 +180,10 @@
                     <div class="col-sm-9">
                       <select class="form-control" data-minimum-results-for-search="Infinity"
                               id="jobProvince2" th:field="*{city}">
-                        <option th:each="item : ${T(com.example.techjobs.common.enums.CityConstant).values()}"
-                                th:selected="(${item.name} == *{city})"
-                                th:text="${item.value}" th:value="${item.name}"></option>
+                        <option
+                            th:each="item : ${T(com.example.techjobs.common.enums.CityConstant).values()}"
+                            th:selected="(${item.name} == *{city})"
+                            th:text="${item.value}" th:value="${item.name}"></option>
                       </select>
                     </div>
                   </div>
@@ -208,8 +206,8 @@
               </div>
             </div>
           </div>
-          <div class="rec-submit">
-            <button class="btn-submit-recuitment" name="" type="submit">
+          <div class="rec-submit" style="text-align: center">
+            <button class="btn btn-primary" type="submit">
               <i class="fa fa-floppy-o pr-2"></i>Lưu hồ sơ
             </button>
           </div>

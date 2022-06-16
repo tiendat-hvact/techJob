@@ -3,6 +3,7 @@ package com.example.techjobs.controller;
 import com.example.techjobs.common.mapper.GenericMapper;
 import com.example.techjobs.common.util.Utils;
 import com.example.techjobs.dto.NotificationRequest;
+import com.example.techjobs.dto.SearchRequest;
 import com.example.techjobs.dto.inputDTO.InputCompanyDTO;
 import com.example.techjobs.dto.inputDTO.InputJobDTO;
 import com.example.techjobs.dto.outputDTO.OutputCompanyDTO;
@@ -206,18 +207,20 @@ public class CompanyController {
     }
   }
 
-  @GetMapping("/job-management/page/{pageId}")
+  @RequestMapping("/job-management/page/{pageId}")
   public String jobManagement(
       Model model,
       @PathVariable(name = "pageId") Integer pageId,
       @CookieValue(name = "company", defaultValue = "0") Integer companyId,
+      @ModelAttribute(name = "searchRequest") SearchRequest searchRequest,
       @ModelAttribute(name = "notification") NotificationRequest notification) {
     if (companyId == 0) {
       return "redirect:/techJob/login?text=unauthorized";
     }
     int size = 5;
+    searchRequest.setCompanyId(companyId);
     Page<OutputJobDTO> outputJobDTOS =
-        jobService.getPageableJobByCompanyId(companyId, pageId, size);
+        jobService.getPageableJobByCompanyId(searchRequest, pageId, size);
     if (outputJobDTOS == null || outputJobDTOS.isEmpty()) {
       model.addAttribute("page", 0);
       model.addAttribute("size", 0);
@@ -247,6 +250,7 @@ public class CompanyController {
       }
     }
     model.addAttribute("notification", notification);
+    model.addAttribute("searchRequest", new SearchRequest());
     return "company-job-management";
   }
 }

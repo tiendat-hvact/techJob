@@ -49,10 +49,6 @@
 
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto my-2 my-lg-0 tnav-right tn-nav">
-          <li class="nav-item active">
-            <a class="nav-link" href="#"><i aria-hidden="true" class="fa fa-search"></i> <span
-                class="hidden-text">Tìm kiếm</span></a>
-          </li>
           <li class="nav-item">
             <a class="nav-link" href="/"> Trang chủ </a>
           </li>
@@ -96,64 +92,47 @@
 </nav>
 <!--  recuiter Nav -->
 
-<!-- widget recuitment  -->
-<div class="container-fluid">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-12">
-        <div class="home-ads">
-          <a href="https://learning.vietnamworks.com">
-            <img
-                src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1652979667/system/image_03.jpg">
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- (end) widget recuitment  -->
-
 <!-- published recuitment -->
 <div class="container-fluid published-recuitment-wrapper">
   <div class="container published-recuitment-content">
     <div class="row">
       <div class="col-md-8 col-sm-12 col-12">
-        <div class="job-board-wrap" style="background: none">
+        <div class="job-board-wrap" style="padding: 0 1rem; border-radius: 1rem">
           <div class="job-group">
             <div class="job pagi">
               <div class="job-content"
-                   style="border: 2px solid black; border-radius: 1rem; background-color: white; margin-bottom: 1rem"
+                   style="border-bottom: 1px solid black"
                    th:each="item : ${jobs}">
                 <div class="job-desc" style="width: 100%">
                   <div class="job-title">
-                    <h4 th:text="${item.name}"></h4>
+                    <h4 style="font-size: 18px" th:text="${item.name}"></h4>
                   </div>
                   <div class="d-flex justify-content-between" style="margin: 1rem 0">
                     <div class="job-inf">
-                      <i aria-hidden="true" class="fa fa-envelope-o"></i>
-                      <span style="margin-left: 0.5rem"
+                      <i aria-hidden="true" class="fa fa-calendar-check-o"></i>
+                      <span style="margin-left: 0.2rem"
                             th:text="'Ngày đăng: ' + ${#temporals.format(item.createDate, 'dd-MM-yyyy')}"></span>
                     </div>
                     <div class="job-inf">
-                      <i aria-hidden="true" class="fa fa-phone"></i>
-                      <span style="margin-left: 0.7rem"
+                      <i aria-hidden="true" class="fa fa-calendar-times-o"></i>
+                      <span style="margin-left: 0.2rem"
                             th:text="'Hạn nộp: ' + ${#temporals.format(item.deadline, 'dd-MM-yyyy')}"></span>
                     </div>
                     <div class="job-inf">
-                      <i aria-hidden="true" class="fa fa-map-marker"></i>
-                      <span style="margin-left: 0.9rem"
+                      <i aria-hidden="true" class="fa fa-user"></i>
+                      <span style="margin-left: 0.2rem"
                             th:text="'Số người ứng tuyển: ' + ${item.numberApply} + ' người'"></span>
                     </div>
                   </div>
                   <div class="d-flex justify-content-around">
                     <a class="btn btn-primary"
-                       style="color: white"
+                       style="font-size: 14px; font-family: Roboto, sans-serif"
                        th:href="@{/techJob/company/get-form-update-job/{id} (id = ${item.id})}"
                        type="button">
                       Xem tin tuyển dụng
                     </a>
-                    <a class="btn btn-primary"
-                       style="color: white"
+                    <a class="btn btn-success"
+                       style="font-size: 14px; font-family: Roboto, sans-serif"
                        th:href="@{/techJob/company/candidate-management/page/1 (jobId = ${item.id})}"
                        type="button">
                       Xem người ứng tuyển
@@ -165,7 +144,7 @@
 
           </div>
           <nav aria-label="Page navigation example" th:if="${page} > 1">
-            <ul class="pagination d-flex justify-content-center">
+            <ul class="pagination d-flex justify-content-center" style="margin-bottom: 1rem">
               <li class="page-item" style="background: white">
                 <a aria-label="Previous" class="page-link" onclick="checkBehind()"
                    th:href="@{/techJob/company/job-management/page/{pageId}(pageId = ${pageId - 1})}">
@@ -191,10 +170,71 @@
 
       </div>
       <!-- Side bar -->
-      <div class="col-md-4 col-sm-12 col-12">
-        <img class="advertisement"
-             src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1652924509/system/image_01.jpg">
-      </div>
+      <form class="col-md-4 col-sm-12 col-12"
+            style="background: white; padding: 1rem; height: fit-content; border-radius: 1rem" method="post"
+            th:action="@{/techJob/company/job-management/page/1}"
+            th:object="${searchRequest}">
+        <div class="paramSearch">
+          <p style="font-weight: bold">Tên tin tuyển dụng: </p>
+          <input class="form-control"
+                 style="font-size: 14px; font-family: Roboto, sans-serif; margin-top: 0.5rem; margin-bottom: 1rem"
+                 th:field="*{name}"
+                 type="text">
+        </div>
+        <div class="paramSearch">
+          <p style="font-weight: bold">Ngày đăng: </p>
+          <div class="d-flex justify-content-around"
+               style="margin-top: 0.5rem; margin-bottom: 1rem">
+            <input class="form-control"
+                   style="font-size: 14px; font-family: Roboto, sans-serif; margin-right: 0.5rem"
+                   th:field="*{createDate.fromDate}"
+                   type="date">
+            <span class="d-flex flex-column justify-content-center">-</span>
+            <input class="form-control"
+                   style="font-size: 14px; font-family: Roboto, sans-serif; margin-left: 0.5rem"
+                   th:field="*{createDate.toDate}"
+                   type="date">
+          </div>
+        </div>
+        <div class="paramSearch">
+          <p style="font-weight: bold">Hạn nộp: </p>
+          <div class="d-flex justify-content-around"
+               style="margin-top: 0.5rem; margin-bottom: 1rem">
+            <input class="form-control"
+                   style="font-size: 14px; font-family: Roboto, sans-serif; margin-right: 0.5rem"
+                   th:field="*{deadLine.fromDate}"
+                   type="date">
+            <span class="d-flex flex-column justify-content-center">-</span>
+            <input class="form-control"
+                   style="font-size: 14px; font-family: Roboto, sans-serif; margin-left: 0.5rem"
+                   th:field="*{deadLine.toDate}"
+                   type="date">
+          </div>
+        </div>
+        <div class="paramSearch">
+          <p style="font-weight: bold">Trạng thái: </p>
+          <select class="form-control"
+                  style="font-size: 14px; font-family: Roboto, sans-serif; margin-top: 0.5rem"
+                  th:field="*{state}">
+            <option th:value="null">
+              Tất cả
+            </option>
+            <option
+                th:value="beforeDeadline">
+              Chưa hết hạn nộp cv
+            </option>
+            <option
+                th:value="afterDeadline">
+              Đã hết hạn nộp cv
+            </option>
+          </select>
+        </div>
+        <div style="margin-top: 1rem; text-align: center">
+          <button class="btn btn-info" style="font-size: 14px; font-family: Roboto, sans-serif"
+                  type="submit">Tìm kiếm
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 </div>

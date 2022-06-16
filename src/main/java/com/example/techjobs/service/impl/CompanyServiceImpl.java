@@ -13,17 +13,14 @@ import com.example.techjobs.dto.LoginRequest;
 import com.example.techjobs.dto.ResultDTO;
 import com.example.techjobs.dto.inputDTO.InputCompanyDTO;
 import com.example.techjobs.dto.outputDTO.OutputCompanyDTO;
-import com.example.techjobs.dto.outputDTO.OutputJobDTO;
 import com.example.techjobs.entity.Company;
-import com.example.techjobs.entity.User;
-import com.example.techjobs.repository.CompanyRepository;
+import com.example.techjobs.repository.CompanyJpaRepository;
 import com.example.techjobs.service.CompanyService;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -39,27 +36,27 @@ public class CompanyServiceImpl implements CompanyService {
   private final Cloudinary cloudinary;
   private final GenericMapper genericMapper;
   private final EmailServiceImpl emailService;
-  private final CompanyRepository companyRepository;
   private final AttributeEncryptor attributeEncryptor;
+  private final CompanyJpaRepository companyJpaRepository;
 
   @Autowired
   public CompanyServiceImpl(
       Cloudinary cloudinary,
       GenericMapper genericMapper,
       EmailServiceImpl emailService,
-      CompanyRepository companyRepository,
-      AttributeEncryptor attributeEncryptor) {
+      AttributeEncryptor attributeEncryptor,
+      CompanyJpaRepository companyJpaRepository) {
     this.cloudinary = cloudinary;
     this.genericMapper = genericMapper;
     this.emailService = emailService;
-    this.companyRepository = companyRepository;
+    this.companyJpaRepository = companyJpaRepository;
     this.attributeEncryptor = attributeEncryptor;
   }
 
   @Override
   public OutputCompanyDTO findById(Integer userId) {
     Company company =
-        companyRepository.findByIdAndStateNot(userId, StateConstant.DELETED.name()).orElse(null);
+        companyJpaRepository.findByIdAndStateNot(userId, StateConstant.DELETED.name()).orElse(null);
     if (company != null) {
       company.setCity(CityConstant.getEnumKeyForValue(company.getCity()));
     }
@@ -69,7 +66,7 @@ public class CompanyServiceImpl implements CompanyService {
   @Override
   public List<OutputCompanyDTO> findLimit(Integer limit) {
     Page<Company> companies =
-        companyRepository.findAllAndStateNot(
+        companyJpaRepository.findAllByStateNot(
             StateConstant.DELETED.name(),
             PageRequest.of(0, limit, Sort.by(Direction.DESC, "createDate")));
     return genericMapper.mapToListOfType(companies.getContent(), OutputCompanyDTO.class);
@@ -79,7 +76,7 @@ public class CompanyServiceImpl implements CompanyService {
   public Map<String, Object> loginAccount(LoginRequest data) {
     Map<String, Object> result = null;
     Company company =
-        companyRepository
+        companyJpaRepository
             .findByEmailAndStateNot(data.getEmail(), StateConstant.DELETED.name())
             .orElse(null);
     if (company != null) {
@@ -99,11 +96,13 @@ public class CompanyServiceImpl implements CompanyService {
   @Override
   public Boolean checkVerifyCode(Integer accountId, String verifyCode) {
     Company company =
-        companyRepository.findByIdAndStateNot(accountId, StateConstant.DELETED.name()).orElse(null);
+        companyJpaRepository
+            .findByIdAndStateNot(accountId, StateConstant.DELETED.name())
+            .orElse(null);
     if (company != null && attributeEncryptor.matches(verifyCode, company.getVerifyCode())) {
       company.setState(StateConstant.ACTIVE.name());
       company.setUpdateDate(LocalDate.now());
-      companyRepository.save(company);
+      companyJpaRepository.save(company);
       return true;
     }
     return false;
@@ -114,7 +113,7 @@ public class CompanyServiceImpl implements CompanyService {
   @SneakyThrows
   public boolean createCompany(InputCompanyDTO data) {
     Company company =
-        companyRepository
+        companyJpaRepository
             .findByEmailAndStateNot(data.getEmail(), StateConstant.DELETED.name())
             .orElse(null);
     if (company == null) {
@@ -129,7 +128,7 @@ public class CompanyServiceImpl implements CompanyService {
       company.setUpdateBy("unknow");
       company.setUpdateDate(LocalDate.now());
       emailService.sendEmailVerifyCode(data.getEmail(), verifyCode);
-      companyRepository.save(company);
+      companyJpaRepository.save(company);
       return true;
     }
     return false;
@@ -140,12 +139,14 @@ public class CompanyServiceImpl implements CompanyService {
   @SneakyThrows
   public boolean updateCompany(int companyId, InputCompanyDTO data) {
     Company companyDuplicatedEmail =
-        companyRepository
+        companyJpaRepository
             .findByIdNotAndEmailAndStateNot(
                 companyId, data.getEmail(), StateConstant.DELETED.name())
             .orElse(null);
     Company company =
-        companyRepository.findByIdAndStateNot(companyId, StateConstant.DELETED.name()).orElse(null);
+        companyJpaRepository
+            .findByIdAndStateNot(companyId, StateConstant.DELETED.name())
+            .orElse(null);
     if (companyDuplicatedEmail == null && company != null) {
       genericMapper.copyNonNullProperties(data, company);
       String name = Utils.formatFileName(company.getEmail()) + "_" + System.currentTimeMillis();
@@ -176,7 +177,7 @@ public class CompanyServiceImpl implements CompanyService {
       }
       company.setCity(CityConstant.valueOf(company.getCity()).getValue());
       company.setUpdateDate(LocalDate.now());
-      companyRepository.save(company);
+      companyJpaRepository.save(company);
       return true;
     }
     return false;
@@ -184,18 +185,18 @@ public class CompanyServiceImpl implements CompanyService {
 
   @Override
   public List<Company> findAll() {
-    return this.companyRepository.findActiveCompany();
+    return this.companyJpaRepository.findAllByStateNot(StateConstant.DELETED.name());
   }
 
   @Override
-  public ResultDTO delete(Integer id) {
-    Optional<Company> companyOptional = this.companyRepository.findById(id);
-    if (!companyOptional.isPresent()) {
-      return new ResultDTO(null, true, "Không tìm thấy cong ty");
+  public ResultDTO<Company> delete(Integer id) {
+    Optional<Company> companyOptional = this.companyJpaRepository.findById(id);
+    if (companyOptional.isEmpty()) {
+      return new ResultDTO<>(null, true, "Không tìm thấy cong ty");
     }
     Company company = companyOptional.get();
     company.setState(StateConstant.DELETED.name());
-    this.companyRepository.save(company);
-    return new ResultDTO(null, false, "Xóa company thành công");
+    this.companyJpaRepository.save(company);
+    return new ResultDTO<>(null, false, "Xóa company thành công");
   }
 }

@@ -1,12 +1,11 @@
 package com.example.techjobs.service;
 
 import com.example.techjobs.dto.ResultDTO;
+import com.example.techjobs.dto.SearchRequest;
 import com.example.techjobs.dto.inputDTO.InputJobDTO;
-import com.example.techjobs.dto.inputDTO.InputUserDTO;
 import com.example.techjobs.dto.outputDTO.OutputJobDTO;
-import java.util.List;
-
 import com.example.techjobs.entity.Job;
+import java.util.List;
 import org.springframework.data.domain.Page;
 
 public interface JobService {
@@ -18,7 +17,7 @@ public interface JobService {
   List<OutputJobDTO> findLimit(InputJobDTO job, Integer limit);
 
   /** Lấy ra danh sách tin tuyển dụng có theo Nhà tuyển dụng có phân trang */
-  Page<OutputJobDTO> getPageableJobByCompanyId(Integer companyId, Integer page, Integer size);
+  Page<OutputJobDTO> getPageableJobByCompanyId(SearchRequest searchRequest, Integer page, Integer size);
 
   /** Tạo mới tin tuyển dụng */
   Integer createJob(Integer companyId, InputJobDTO data);
@@ -31,5 +30,5 @@ public interface JobService {
 
   List<Job> findAll();
 
-  ResultDTO delete(Integer id);
+  ResultDTO<Job> delete(Integer id);
 }

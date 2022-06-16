@@ -5,7 +5,6 @@ import com.cloudinary.utils.ObjectUtils;
 import com.example.techjobs.common.util.Utils;
 import java.util.Properties;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;

@@ -4,9 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
@@ -33,7 +31,7 @@ public class GenericMapper {
     return modelMapper.map(source, typeDestination);
   }
 
-  //map 1 danh sách của đối tượng class Source sang class Destination
+  // map 1 danh sách của đối tượng class Source sang class Destination
   public <S, T> List<T> mapToListOfType(List<S> source, Class<T> targetClass) {
     modelMapper.getConfiguration().setAmbiguityIgnored(true);
     if (source == null || source.isEmpty()) {

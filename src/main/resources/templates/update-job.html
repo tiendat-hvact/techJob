@@ -48,16 +48,11 @@
 
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto my-2 my-lg-0 tnav-right tn-nav">
-          <li class="nav-item active">
-            <a class="nav-link" href="#"><i aria-hidden="true" class="fa fa-search"></i> <span
-                class="hidden-text">Tìm kiếm</span></a>
+          <li class="nav-item">
+            <a class="nav-link" href="/"> Trang chủ </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/techJob/company/job-management">Quản lý tin tuyển dụng</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/techJob/company/candidate-management">Quản lý người ứng
-              tuyển</a>
+            <a class="nav-link" href="/techJob/logout">Đăng xuất</a>
           </li>
         </ul>
       </div>
@@ -165,7 +160,8 @@
                               th:field="*{gender}" type="text">
                         <option
                             th:each="item : ${T(com.example.techjobs.common.enums.GenderConstant).values()}"
-                            th:text="${item.value}" th:value="${item.name}"></option>
+                            th:selected="${job.gender == item.name}" th:text="${item.value}"
+                            th:value="${item.name}"></option>
                       </select>
                     </div>
                   </div>
@@ -207,7 +203,7 @@
                       <select class="form-control" data-minimum-results-for-search="Infinity"
                               id="jobType"
                               th:field="*{typeId}" type="text">
-                        <option th:each="item : ${listType}"
+                        <option th:each="item : ${listType}" th:selected="${job.typeId == item.id}"
                                 th:text="${item.name}" th:value="${item.id}"></option>
                       </select>
                     </div>
@@ -248,13 +244,13 @@
             </div>
           </div>
           <div class="rec-submit d-flex justify-content-around">
-            <button class="btn-submit-recuitment" name="" type="submit">
+            <button class="btn btn-primary" type="submit">
               <i class="fa fa-floppy-o pr-2"></i>Lưu tin tuyển dụng
             </button>
-            <a class="btn-submit-recuitment" style="color: white; background: blue"
+            <a class="btn btn-danger"
                th:href="@{/techJob/company/delete-job/{id} (id = ${jobId})}"
                type="button">
-              <i aria-hidden="true" class="fa fa-trash"></i> &nbsp;&nbsp; Xóa tin tuyển dụng
+              <i aria-hidden="true" class="fa fa-trash pr-2"></i> Xóa tin tuyển dụng
             </a>
           </div>
         </form>
