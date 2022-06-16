@@ -1,0 +1,34 @@
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+    <a class="sidebar-brand align-items-center justify-content-center d-none d-md-flex">
+        <div class="sidebar-brand-text mx-3">ADMIN TECHJOB</div>
+    </a>
+    <div class="d-flex d-md-none justify-content-center">
+        <img style="width: 54px; height: 54px;" th:src="@{/images/logo2.png}"/>
+    </div>
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <div id="admin-sidebar">
+        <div class="sidebar-heading">Chức năng chính</div>
+
+        <li class="nav-item" th:classappend="${#request.servletPath == '/techJob/admin/types' ? 'active' : ''}">
+            <a class="nav-link" th:href="@{/techJob/admin/types}">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Quản lý ngành nghề</span></a>
+        </li>
+
+        <li class="nav-item" th:classappend="${#request.servletPath == '/techJob/admin/jobs' ? 'active' : ''}">
+            <a class="nav-link" th:href="@{/techJob/admin/jobs}">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Quản lý tin tuyển dụng</span></a>
+        </li>
+
+        <li class="nav-item" th:classappend="${#request.servletPath == '/techJob/admin/user' ? 'active' : ''}">
+            <a class="nav-link" th:href="@{/techJob/admin/user}">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Quản lý người dùng</span></a>
+        </li>
+
+        <hr class="sidebar-divider">
+    </div>
+</ul>

@@ -1,6 +1,8 @@
 package com.example.techjobs.repository;
 
 import com.example.techjobs.entity.Company;
+
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,4 +21,7 @@ public interface CompanyRepository extends JpaRepository<Company, Integer> {
 
   @Query(value = "SELECT c FROM Company c WHERE c.state <> :stateNot")
   Page<Company> findAllAndStateNot(@Param(value = "stateNot") String stateNot, Pageable pageable);
+
+  @Query(nativeQuery = true, value = "SELECT * FROM companies WHERE state <> 'DELETED'")
+  List<Company> findActiveCompany();
 }

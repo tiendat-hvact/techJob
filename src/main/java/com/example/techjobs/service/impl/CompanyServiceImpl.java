@@ -10,16 +10,20 @@ import com.example.techjobs.common.enums.StateConstant;
 import com.example.techjobs.common.mapper.GenericMapper;
 import com.example.techjobs.common.util.Utils;
 import com.example.techjobs.dto.LoginRequest;
+import com.example.techjobs.dto.ResultDTO;
 import com.example.techjobs.dto.inputDTO.InputCompanyDTO;
 import com.example.techjobs.dto.outputDTO.OutputCompanyDTO;
 import com.example.techjobs.dto.outputDTO.OutputJobDTO;
 import com.example.techjobs.entity.Company;
+import com.example.techjobs.entity.User;
 import com.example.techjobs.repository.CompanyRepository;
 import com.example.techjobs.service.CompanyService;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -176,5 +180,22 @@ public class CompanyServiceImpl implements CompanyService {
       return true;
     }
     return false;
+  }
+
+  @Override
+  public List<Company> findAll() {
+    return this.companyRepository.findActiveCompany();
+  }
+
+  @Override
+  public ResultDTO delete(Integer id) {
+    Optional<Company> companyOptional = this.companyRepository.findById(id);
+    if (!companyOptional.isPresent()) {
+      return new ResultDTO(null, true, "Không tìm thấy cong ty");
+    }
+    Company company = companyOptional.get();
+    company.setState(StateConstant.DELETED.name());
+    this.companyRepository.save(company);
+    return new ResultDTO(null, false, "Xóa company thành công");
   }
 }

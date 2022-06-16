@@ -125,11 +125,6 @@
              data-toggle="tab"
              href="#home" id="home-tab" role="tab">Tìm việc làm</a>
         </li>
-        <li class="nav-item search-nav-item">
-          <a aria-controls="profile" aria-selected="false" class="nav-link snav-link"
-             data-toggle="tab"
-             href="#profile" id="profile-tab" role="tab">Tìm công ty</a>
-        </li>
       </ul>
       <div class="tab-content search-tab-content" id="myTabContent">
         <!-- content tab 1 -->
@@ -139,40 +134,25 @@
             <div class="row">
               <div class="col-md-10 col-sm-12">
                 <div class="row">
-                  <div class="col-md-5">
+                  <div class="col-md-6">
                     <div class="input-group s-input-group">
                       <input class="form-control sinput" placeholder="Nhập kỹ năng, công việc,..."
-                             type="text">
+                             type="text" name="name" th:value="${param.name}">
                       <span><i class="fa fa-search"></i></span>
                     </div>
                   </div>
-                  <div class="col-md-4">
-                    <select id="computer-languages">
-                      <option hidden selected value="">Tất cả ngôn ngữ</option>
-                      <option>Java</option>
-                      <option>.NET</option>
-                      <option>Javascript</option>
-                      <option>Php</option>
-                      <option>Python</option>
-                      <option>QC QC</option>
-                      <option>Business Analyst</option>
-                      <option>Tester</option>
-                      <option>Ruby</option>
+                  <div class="col-md-6">
+                    <select id="computer-languages" name="typeId">
+                      <option hidden selected value="">Chọn ngành nghề</option>
+                      <option
+                        th:each="type: ${types}"
+                        th:value="${type.id}"
+                        th:selected="${type.id == currentType}"
+                        th:text="${type.name}"
+                      />
                     </select>
                     <i aria-hidden="true" class="fa fa-code sfa"></i>
                   </div>
-                  <div class="col-md-3">
-                    <select id="s-provinces">
-                      <option hidden selected value="">Tất cả địa điểm</option>
-                      <option>Đà Nẵng</option>
-                      <option>Hà Nội</option>
-                      <option>Hồ Chí Minh</option>
-                      <option>Buôn Ma Thuột</option>
-                      <option>Quy Nhơn</option>
-                      <option>Nha Trang</option>
-                    </select>
-                    <i aria-hidden="true" class="fa fa-map-marker sfa"></i>
-                  </div>
                 </div>
               </div>
               <div class="col-md-2 col-sm-12">
@@ -181,34 +161,12 @@
             </div>
           </form>
         </div>
-        <!-- (end) content tab 1 -->
-        <!-- content tab 2 -->
-        <div aria-labelledby="profile-tab" class="tab-pane stab-pane fade" id="profile"
-             role="tabpanel">
-          <form class="bn-search-form">
-            <div class="row">
-              <div class="col-md-10 col-sm-12">
-                <div class="input-group s-input-group w-100">
-                  <input class="form-control sinput" placeholder="Nhập kỹ năng, công việc,..."
-                         type="text">
-                  <span><i class="fa fa-search"></i></span>
-                </div>
-              </div>
-              <div class="col-md-2 col-sm-12">
-                <button class="btn btn-primary btn-search col-sm-12" type="submit">Tìm kiếm</button>
-              </div>
-            </div>
-          </form>
-        </div>
-        <!-- (end) content tab 2 -->
       </div>
 
     </div>
   </div>
 </div>
-<!-- (end) search section -->
 
-<!-- job board & sidebar section  -->
 <div class="container-fluid jb-wrapper">
   <div class="container">
     <div class="row">
