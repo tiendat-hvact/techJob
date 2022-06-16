@@ -38,7 +38,8 @@ public class JobServiceImpl implements JobService {
       CompanyJpaRepository companyJpaRepository,
       ApplyJpaRepository applyJpaRepository,
       JobJpaRepository jopJpaRepository,
-      JobRepository jobRepository, GenericMapper genericMapper) {
+      JobRepository jobRepository,
+      GenericMapper genericMapper) {
     this.companyJpaRepository = companyJpaRepository;
     this.applyJpaRepository = applyJpaRepository;
     this.jopJpaRepository = jopJpaRepository;
@@ -144,7 +145,7 @@ public class JobServiceImpl implements JobService {
 
   @Override
   public List<Job> findAll() {
-    return this.jopJpaRepository.findAllByStateNot(StateConstant.ACTIVE.name());
+    return this.jopJpaRepository.findAllByStateNot(StateConstant.DELETED.name());
   }
 
   @Override
