@@ -27,6 +27,7 @@ public class AttributeEncryptor implements AttributeConverter<String, String> {
   }
 
   @Override
+  // mã hóa
   public String convertToDatabaseColumn(String attribute) {
     try {
       cipher.init(Cipher.ENCRYPT_MODE, key);
@@ -37,6 +38,7 @@ public class AttributeEncryptor implements AttributeConverter<String, String> {
   }
 
   @Override
+  // giải mã
   public String convertToEntityAttribute(String dbData) {
     try {
       cipher.init(Cipher.DECRYPT_MODE, key);
