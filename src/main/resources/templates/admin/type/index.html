@@ -1,0 +1,45 @@
+<link rel="stylesheet" th:href="@{/css/table/table.css}">
+<script th:src="@{/js/table/table.js}"></script>
+<div th:replace="admin/layout :: layout(~{::.container-fluid}, ~{::link}, ~{::script}, 'Quản lý ngành nghề')">
+    <div class="container-fluid">
+        <h1 class="h3 mb-2 text-gray-800">QUẢN LÝ NGÀNH NGỀ</h1>
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">Danh sách ngành nghề</h6>
+                <a class="btn btn-primary" data-toggle="modal" data-target="#modal-create">Tạo mới ngành nghề</a>
+                <div class="modal fade" id="modal-create">
+                    <div th:replace="admin/type/form :: form()"></div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Tên</th>
+                            <th>Thao tác</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="type,status: ${types}" th:object="${type}">
+                            <td th:text="${status.index + 1}"></td>
+                            <td th:text="*{name}"></td>
+                            <td>
+                                <a
+                                        class="cursor-pointer text-danger btn-delete"
+                                        th:attr="
+                                        data-title=|Xác nhận?|
+                                        ,data-body=|Bạn có đồng ý muốn xóa ngành nghề: *{name}|
+                                        ,data-href=|@{/techJob/admin/types/delete/{id}(id = ${type.id})}|
+                                    "
+                                >Xóa</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

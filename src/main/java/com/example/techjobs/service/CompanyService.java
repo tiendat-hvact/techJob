@@ -1,9 +1,12 @@
 package com.example.techjobs.service;
 
 import com.example.techjobs.dto.LoginRequest;
+import com.example.techjobs.dto.ResultDTO;
 import com.example.techjobs.dto.inputDTO.InputCompanyDTO;
 import com.example.techjobs.dto.outputDTO.OutputCompanyDTO;
 import com.example.techjobs.dto.outputDTO.OutputJobDTO;
+import com.example.techjobs.entity.Company;
+
 import java.util.List;
 import java.util.Map;
 
@@ -26,4 +29,8 @@ public interface CompanyService {
 
   /** Cập nhật tài khoản nhà tuyển dụng theo ID */
   boolean updateCompany(int companyId, InputCompanyDTO data);
+
+  List<Company> findAll();
+
+  ResultDTO delete(Integer id);
 }
