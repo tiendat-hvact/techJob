@@ -7,6 +7,7 @@ import com.example.techjobs.dto.ResultDTO;
 import com.example.techjobs.dto.SearchRequest;
 import com.example.techjobs.dto.inputDTO.InputJobDTO;
 import com.example.techjobs.dto.outputDTO.OutputJobDTO;
+import com.example.techjobs.entity.Apply;
 import com.example.techjobs.entity.Company;
 import com.example.techjobs.entity.Job;
 import com.example.techjobs.repository.ApplyJpaRepository;
@@ -48,6 +49,11 @@ public class JobServiceImpl implements JobService {
   }
 
   @Override
+  public Integer countNumberJob(Integer companyId) {
+    return jopJpaRepository.countNumberJob(companyId, StateConstant.DELETED.name());
+  }
+
+  @Override
   public OutputJobDTO findById(Integer jobId) {
     Job job =
         jopJpaRepository.findByIdAndStateNot(jobId, StateConstant.DELETED.name()).orElse(null);
@@ -72,13 +78,16 @@ public class JobServiceImpl implements JobService {
   }
 
   @Override
-  public Page<OutputJobDTO> getPageableJobByCompanyId(
+  public List<Job> findAll() {
+    return this.jopJpaRepository.findAllByStateNot(StateConstant.DELETED.name());
+  }
+
+  @Override
+  public Page<OutputJobDTO> getPageableJobByCondition(
       SearchRequest searchRequest, Integer page, Integer size) {
     Page<Job> jobs =
         jobRepository.getPageableJobByCondition(
-            searchRequest,
-            StateConstant.DELETED.name(),
-            PageRequest.of(page - 1, size, Sort.by(Direction.DESC, "createDate")));
+            searchRequest, PageRequest.of(page - 1, size, Sort.by(Direction.DESC, "createDate")));
     Page<OutputJobDTO> outputJobDTOS =
         genericMapper.toPage(
             jobs,
@@ -131,30 +140,14 @@ public class JobServiceImpl implements JobService {
 
   @Override
   @Transactional
-  public boolean deleteJob(Integer jobId) {
-    Job job =
-        jopJpaRepository.findByIdAndStateNot(jobId, StateConstant.DELETED.name()).orElse(null);
-    if (job != null) {
-      job.setState(StateConstant.DELETED.name());
-      job.setUpdateDate(LocalDate.now());
-      jopJpaRepository.save(job);
-      return true;
-    }
-    return false;
-  }
-
-  @Override
-  public List<Job> findAll() {
-    return this.jopJpaRepository.findAllByStateNot(StateConstant.DELETED.name());
-  }
-
-  @Override
-  public ResultDTO<Job> delete(Integer id) {
-    Optional<Job> opt = this.jopJpaRepository.findById(id);
+  public ResultDTO<Job> delete(Integer jobId) {
+    Optional<Job> opt = this.jopJpaRepository.findById(jobId);
     if (opt.isEmpty()) {
       return new ResultDTO<>(null, true, "Không tìm thấy tin tuyển dụng");
     }
     Job job = opt.get();
+    List<Apply> applies = applyJpaRepository.findAllByJobId(jobId);
+    applyJpaRepository.deleteAll(applies);
     job.setState(StateConstant.DELETED.name());
     this.jopJpaRepository.save(job);
     return new ResultDTO<>(null, false, "Xoá tin tuyển dụng thành công");

@@ -125,15 +125,12 @@ public class CommonController {
     Map<String, Object> resultLogin = new HashMap<>();
     if ("user".equals(type)) {
       resultLogin = userService.loginAccount(account);
-    }
-
-    if ("company".equals(type)) {
+    } else if ("company".equals(type)) {
       resultLogin = companyService.loginAccount(account);
       if (Objects.nonNull(resultLogin)) {
         resultLogin.put("role", "");
       }
     }
-
     if (resultLogin != null && !resultLogin.isEmpty()) {
       accountId = (Integer) resultLogin.get("accountId");
       if (accountId == 0) {

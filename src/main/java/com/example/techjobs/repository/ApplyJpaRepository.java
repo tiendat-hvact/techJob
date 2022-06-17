@@ -11,4 +11,6 @@ public interface ApplyJpaRepository extends JpaRepository<Apply, ApplyId> {
 
   @Query(value = "SELECT COUNT(a) FROM Apply a WHERE a.job.id = :jobId")
   Integer countNumberApply(@Param(value = "jobId") Integer jobId);
+
+  List<Apply> findAllByJobId(Integer jobId);
 }

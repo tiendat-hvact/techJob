@@ -14,8 +14,11 @@ public interface JobJpaRepository extends JpaRepository<Job, Integer> {
   Optional<Job> findByIdAndStateNot(Integer jobId, String stateNot);
 
   Optional<Job> findByIdNotAndNameAndStateNot(Integer jobId, String name, String stateNot);
-  
-  Page<Job> findAllByCompanyIdAndStateNot(Integer companyId, String stateNot, Pageable pageable);
+
+  @Query(
+      value = "SELECT COUNT(j) FROM Job j WHERE j.company.id = :companyId AND j.state <> :stateNot")
+  Integer countNumberJob(
+      @Param(value = "companyId") Integer companyId, @Param(value = "stateNot") String stateNot);
 
   @Query(
       value =

@@ -58,7 +58,11 @@ public class UserServiceImpl implements UserService {
   public OutputUserDTO findById(Integer userId) {
     User user =
         userJpaRepository.findByIdAndStateNot(userId, StateConstant.DELETED.name()).orElse(null);
-    return genericMapper.mapToType(user, OutputUserDTO.class);
+    OutputUserDTO outputUserDTO = genericMapper.mapToType(user, OutputUserDTO.class);
+    if (outputUserDTO != null) {
+      outputUserDTO.setCv(fileService.findByUserId(userId));
+    }
+    return outputUserDTO;
   }
 
   @Override

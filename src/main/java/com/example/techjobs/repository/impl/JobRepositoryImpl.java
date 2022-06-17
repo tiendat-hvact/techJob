@@ -10,19 +10,20 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
 public class JobRepositoryImpl implements JobRepository {
 
   @PersistenceContext EntityManager entityManager;
 
   @Override
-  public Page<Job> getPageableJobByCondition(
-      SearchRequest searchRequest, String stateNot, Pageable pageable) {
+  public Page<Job> getPageableJobByCondition(SearchRequest searchRequest, Pageable pageable) {
     String sql = "SELECT j FROM Job j WHERE j.state <> '" + StateConstant.DELETED.name() + "'";
     if (searchRequest.getCompanyId() != null) {
       sql += " AND j.company.id = " + searchRequest.getCompanyId();
@@ -57,7 +58,7 @@ public class JobRepositoryImpl implements JobRepository {
         sql += "AND j.deadline <= '" + LocalDate.now() + "'";
       }
     }
-    System.out.println(sql);
+    log.info(sql);
     Query query = entityManager.createQuery(sql, Job.class);
     List<Job> jobs = query.getResultList();
     return new PageImpl<>(jobs, pageable, jobs.size());

@@ -256,13 +256,15 @@
       <div class="col-md-4 col-sm-12 col-12">
         <div class="recuiter-info">
           <div class="recuiter-info-avt">
-            <img th:src="${avatar}">
+            <img th:src="${company.avatar}">
           </div>
           <div class="clearfix list-rec">
-            <h4>NESTLE Inc.</h4>
+            <h4 th:text="${company.name}"></h4>
             <ul>
-              <li><a href="#">Việc làm đang đăng <strong>(0)</strong></a></li>
-              <li><a href="#">Follower <strong>(450)</strong></a></li>
+              <li>
+                <a>Việc làm đang đăng <strong th:text="'(' + ${numberJob} + ')'"></strong></a>
+              </li>
+              <li><a>Follower <strong>(450)</strong></a></li>
             </ul>
           </div>
         </div>

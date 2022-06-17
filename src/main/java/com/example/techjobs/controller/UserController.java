@@ -3,7 +3,6 @@ package com.example.techjobs.controller;
 import com.example.techjobs.common.mapper.GenericMapper;
 import com.example.techjobs.dto.NotificationRequest;
 import com.example.techjobs.dto.inputDTO.InputUserDTO;
-import com.example.techjobs.dto.outputDTO.OutputFileDTO;
 import com.example.techjobs.dto.outputDTO.OutputUserDTO;
 import com.example.techjobs.service.ApplyService;
 import com.example.techjobs.service.FileService;
@@ -60,11 +59,10 @@ public class UserController {
             break;
         }
       }
-      OutputFileDTO cv = fileService.findByUserId(userId);
       model.addAttribute("user", genericMapper.mapToType(user, InputUserDTO.class));
       model.addAttribute("avatar", user.getAvatar());
       model.addAttribute("notification", notification);
-      model.addAttribute("cv", cv);
+      model.addAttribute("cv", user.getCv());
       return "user-info";
     }
     return "redirect:/techJob/login?text=account-not-found";
