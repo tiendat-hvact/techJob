@@ -72,6 +72,7 @@ public class CompanyController {
       }
     }
     model.addAttribute("company", genericMapper.mapToType(company, InputCompanyDTO.class));
+    model.addAttribute("numberJob", company.getNumberJob());
     model.addAttribute("notification", notification);
     return "company-info";
   }
@@ -126,7 +127,7 @@ public class CompanyController {
         || Utils.isNullOrEmpty(data.getSalary())
         || Utils.isNullOrEmpty(data.getExperience())
         || Utils.isNullOrEmpty(data.getWorkingForm())
-        || Utils.isNullOrEmpty(data.getDeadline().toString())
+        || data.getDeadline() == null
         || Utils.isNullOrEmpty(data.getWelfare())
         || Utils.isNullOrEmpty(data.getDescription())
         || Utils.isNullOrEmpty(data.getRequirement())) {
@@ -184,7 +185,7 @@ public class CompanyController {
         || Utils.isNullOrEmpty(data.getSalary())
         || Utils.isNullOrEmpty(data.getExperience())
         || Utils.isNullOrEmpty(data.getWorkingForm())
-        || Utils.isNullOrEmpty(data.getDeadline().toString())
+        || data.getDeadline() == null
         || Utils.isNullOrEmpty(data.getWelfare())
         || Utils.isNullOrEmpty(data.getDescription())
         || Utils.isNullOrEmpty(data.getRequirement())) {
