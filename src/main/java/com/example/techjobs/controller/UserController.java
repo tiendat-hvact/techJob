@@ -1,13 +1,17 @@
 package com.example.techjobs.controller;
 
 import com.example.techjobs.common.mapper.GenericMapper;
+import com.example.techjobs.common.util.Utils;
 import com.example.techjobs.dto.NotificationRequest;
+import com.example.techjobs.dto.SearchRequest;
 import com.example.techjobs.dto.inputDTO.InputUserDTO;
+import com.example.techjobs.dto.outputDTO.OutputApplyDTO;
 import com.example.techjobs.dto.outputDTO.OutputUserDTO;
+import com.example.techjobs.entity.ApplyId;
 import com.example.techjobs.service.ApplyService;
-import com.example.techjobs.service.FileService;
 import com.example.techjobs.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -24,18 +28,13 @@ public class UserController {
   private final GenericMapper genericMapper;
   private final ApplyService applyService;
   private final UserService userService;
-  private final FileService fileService;
 
   @Autowired
   public UserController(
-      GenericMapper genericMapper,
-      ApplyService applyService,
-      UserService userService,
-      FileService fileService) {
+      GenericMapper genericMapper, ApplyService applyService, UserService userService) {
     this.genericMapper = genericMapper;
     this.applyService = applyService;
     this.userService = userService;
-    this.fileService = fileService;
   }
 
   @GetMapping
@@ -60,7 +59,7 @@ public class UserController {
         }
       }
       model.addAttribute("user", genericMapper.mapToType(user, InputUserDTO.class));
-      model.addAttribute("avatar", user.getAvatar());
+      model.addAttribute("numberApply", user.getNumberApply());
       model.addAttribute("notification", notification);
       model.addAttribute("cv", user.getCv());
       return "user-info";
@@ -98,6 +97,67 @@ public class UserController {
       return "redirect:/techJob/job/" + jobId + "?text=apply-existed";
     } else {
       return "redirect:/techJob/job/" + jobId + "?text=apply-fail";
+    }
+  }
+
+  @RequestMapping("/apply-management/page/{pageId}")
+  public String candidateManagement(
+      Model model,
+      @PathVariable(name = "pageId") Integer pageId,
+      @CookieValue(name = "user", defaultValue = "0") Integer userId,
+      @ModelAttribute(name = "searchRequest") SearchRequest searchRequest,
+      @ModelAttribute(name = "notification") NotificationRequest notification) {
+    if (userId == 0) {
+      return "redirect:/techJob/login?text=unauthorized";
+    }
+    int size = 5;
+    searchRequest.setUserId(userId);
+    Page<OutputApplyDTO> outputApplyDTOS =
+        applyService.getPageableApplyByCondition(searchRequest, pageId, size);
+    if (outputApplyDTOS == null || outputApplyDTOS.isEmpty()) {
+      model.addAttribute("page", 0);
+      model.addAttribute("size", 0);
+      model.addAttribute("pageId", 0);
+      model.addAttribute("stt", 0);
+      model.addAttribute("candidates", null);
+    } else {
+      int page = outputApplyDTOS.getTotalPages();
+      model.addAttribute("page", page);
+      model.addAttribute("size", size);
+      model.addAttribute("pageId", pageId);
+      model.addAttribute("stt", Utils.getListNumberPage(page));
+      model.addAttribute("candidates", outputApplyDTOS);
+    }
+    if (notification.getText() != null) {
+      switch (notification.getText()) {
+        case "delete-success":
+          notification.setText("Xóa thông tin ứng tuyển thành công");
+          break;
+        case "delete-fail":
+          notification.setText(
+              "Xóa thông tin ứng tuyển thất bại <br> Xin hãy chắc chắn thông tin có tồn tại");
+          break;
+        default:
+          notification.setText(null);
+          break;
+      }
+    }
+    model.addAttribute("notification", notification);
+    model.addAttribute("searchRequest", new SearchRequest());
+    return "user-apply-management";
+  }
+
+  @GetMapping("/delete-apply")
+  public String deleteApply(
+      @CookieValue(name = "user", defaultValue = "0") Integer userId,
+      @ModelAttribute ApplyId applyId) {
+    if (userId == 0) {
+      return "redirect:/techJob/login?text=unauthorized";
+    }
+    if (applyService.deleteApply(applyId)) {
+      return "redirect:/techJob/user/apply-management/page/1?text=delete-success";
+    } else {
+      return "redirect:/techJob/user/apply-management/page/1?text=delete-fail";
     }
   }
 }

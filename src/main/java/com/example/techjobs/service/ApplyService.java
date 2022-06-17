@@ -14,5 +14,6 @@ public interface ApplyService {
   Page<OutputApplyDTO> getPageableApplyByCondition(
       SearchRequest searchRequest, Integer page, Integer size);
 
+  /** Xóa thông tin ứng tuyển công việc */
   boolean deleteApply(ApplyId applyId);
 }

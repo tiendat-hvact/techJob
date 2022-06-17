@@ -51,10 +51,6 @@ public class CompanyController {
     this.jobService = jobService;
   }
 
-  protected Integer countNumberJob(Integer companyId) {
-    return jobService.countNumberJob(companyId);
-  }
-
   @GetMapping
   public String companyFindById(
       Model model,
@@ -77,7 +73,6 @@ public class CompanyController {
     }
     model.addAttribute("company", genericMapper.mapToType(company, InputCompanyDTO.class));
     model.addAttribute("notification", notification);
-    model.addAttribute("numberJob", countNumberJob(companyId));
     return "company-info";
   }
 
@@ -119,7 +114,6 @@ public class CompanyController {
     model.addAttribute("company", companyService.findById(companyId));
     model.addAttribute("notification", notification);
     model.addAttribute("listType", typeService.findAll());
-    model.addAttribute("numberJob", countNumberJob(companyId));
     return "create-job";
   }
 
@@ -179,7 +173,6 @@ public class CompanyController {
     model.addAttribute("company", companyService.findById(companyId));
     model.addAttribute("notification", notification);
     model.addAttribute("listType", typeService.findAll());
-    model.addAttribute("numberJob", countNumberJob(companyId));
     return "update-job";
   }
 
@@ -317,7 +310,7 @@ public class CompanyController {
   @GetMapping("/delete-candidate")
   public String deleteCandidate(
       @CookieValue(name = "company", defaultValue = "0") Integer companyId,
-      @ModelAttribute(name = "searchRequest") ApplyId applyId) {
+      @ModelAttribute ApplyId applyId) {
     if (companyId == 0) {
       return "redirect:/techJob/login?text=unauthorized";
     }

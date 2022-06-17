@@ -15,11 +15,13 @@ import com.example.techjobs.dto.inputDTO.InputCompanyDTO;
 import com.example.techjobs.dto.outputDTO.OutputCompanyDTO;
 import com.example.techjobs.entity.Company;
 import com.example.techjobs.repository.CompanyJpaRepository;
+import com.example.techjobs.repository.JobJpaRepository;
 import com.example.techjobs.service.CompanyService;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,34 +35,43 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class CompanyServiceImpl implements CompanyService {
 
-  private final Cloudinary cloudinary;
-  private final GenericMapper genericMapper;
-  private final EmailServiceImpl emailService;
-  private final AttributeEncryptor attributeEncryptor;
   private final CompanyJpaRepository companyJpaRepository;
+  private final AttributeEncryptor attributeEncryptor;
+  private final JobJpaRepository jobJpaRepository;
+  private final EmailServiceImpl emailService;
+  private final GenericMapper genericMapper;
+  private final Cloudinary cloudinary;
 
   @Autowired
   public CompanyServiceImpl(
-      Cloudinary cloudinary,
-      GenericMapper genericMapper,
-      EmailServiceImpl emailService,
+      CompanyJpaRepository companyJpaRepository,
       AttributeEncryptor attributeEncryptor,
-      CompanyJpaRepository companyJpaRepository) {
-    this.cloudinary = cloudinary;
-    this.genericMapper = genericMapper;
-    this.emailService = emailService;
+      JobJpaRepository jobJpaRepository,
+      EmailServiceImpl emailService,
+      GenericMapper genericMapper,
+      Cloudinary cloudinary) {
     this.companyJpaRepository = companyJpaRepository;
     this.attributeEncryptor = attributeEncryptor;
+    this.jobJpaRepository = jobJpaRepository;
+    this.emailService = emailService;
+    this.genericMapper = genericMapper;
+    this.cloudinary = cloudinary;
   }
 
   @Override
-  public OutputCompanyDTO findById(Integer userId) {
+  public OutputCompanyDTO findById(Integer companyId) {
     Company company =
-        companyJpaRepository.findByIdAndStateNot(userId, StateConstant.DELETED.name()).orElse(null);
-    if (company != null) {
-      company.setCity(CityConstant.getEnumKeyForValue(company.getCity()));
+        companyJpaRepository
+            .findByIdAndStateNot(companyId, StateConstant.DELETED.name())
+            .orElse(null);
+    OutputCompanyDTO outputCompanyDTO = genericMapper.mapToType(company, OutputCompanyDTO.class);
+    if (outputCompanyDTO != null) {
+      outputCompanyDTO.setCity(
+          CityConstant.getEnumKeyForValue(Objects.requireNonNull(company).getCity()));
+      outputCompanyDTO.setNumberJob(
+          jobJpaRepository.countNumberJob(companyId, StateConstant.DELETED.name()));
     }
-    return genericMapper.mapToType(company, OutputCompanyDTO.class);
+    return outputCompanyDTO;
   }
 
   @Override
@@ -91,6 +102,11 @@ public class CompanyServiceImpl implements CompanyService {
       }
     }
     return result;
+  }
+
+  @Override
+  public List<Company> findAll() {
+    return this.companyJpaRepository.findAllByStateNot(StateConstant.DELETED.name());
   }
 
   @Override
@@ -181,11 +197,6 @@ public class CompanyServiceImpl implements CompanyService {
       return true;
     }
     return false;
-  }
-
-  @Override
-  public List<Company> findAll() {
-    return this.companyJpaRepository.findAllByStateNot(StateConstant.DELETED.name());
   }
 
   @Override

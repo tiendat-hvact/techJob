@@ -94,7 +94,8 @@ public class JobServiceImpl implements JobService {
             OutputJobDTO.class,
             PageRequest.of(page - 1, size, Sort.by(Direction.DESC, "createdDate")));
     if (outputJobDTOS != null && !outputJobDTOS.isEmpty()) {
-      outputJobDTOS.forEach(i -> i.setNumberApply(applyJpaRepository.countNumberApply(i.getId())));
+      outputJobDTOS.forEach(
+          i -> i.setNumberApply(applyJpaRepository.countNumberApplyByJob(i.getId())));
     }
     return outputJobDTOS;
   }

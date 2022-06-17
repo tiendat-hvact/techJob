@@ -13,8 +13,11 @@ public interface CompanyService {
   /** Tìm tài khoản nhà tuyển dụng theo ID */
   OutputCompanyDTO findById(Integer companyId);
 
-  /** Lấy ra danh sách công ty có giới hạn */
+  /** Lấy ra danh sách nhà tuyển dụng có giới hạn */
   List<OutputCompanyDTO> findLimit(Integer limit);
+
+  /** Lấy ra danh sách tất cả nhà tuyển dụng */
+  List<Company> findAll();
 
   /** Kiểm tra tài khoản login */
   Map<String, Object> loginAccount(LoginRequest data);
@@ -28,7 +31,6 @@ public interface CompanyService {
   /** Cập nhật tài khoản nhà tuyển dụng theo ID */
   boolean updateCompany(int companyId, InputCompanyDTO data);
 
-  List<Company> findAll();
-
+  /** Xóa tài khoản nhà tuyển dụng theo ID */
   ResultDTO<Company> delete(Integer id);
 }

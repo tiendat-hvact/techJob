@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Hồ sơ nhà tuyển dụng</title>
+  <title>Quản lý việc làm đã đăng ký</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
 
   <!-- Roboto Fonts -->
@@ -74,163 +74,131 @@
   <div class="collapse navbar-collapse container" id="navbarNava">
     <ul class="navbar-nav nav-recuitment-li">
       <li class="nav-item active">
-        <a class="nav-link" href="/techJob/company">Quản lý hồ sơ</a>
+        <a class="nav-link" href="/techJob/user">Quản lý hồ sơ</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/techJob/company/get-form-create-job">Đăng tin tuyển dụng</a>
+        <a class="nav-link" href="#">Công ty đang theo dõi</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/techJob/company/job-management/page/1">Quản lý tin tuyển dụng</a>
+        <a class="nav-link" href="#">Việc làm đang theo dõi</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/techJob/company/candidate-management/page/1">Quản lý người ứng
-          tuyển</a>
+        <a class="nav-link" href="/techJob/user/apply-management/page/1">Việc làm đã đăng ký</a>
       </li>
     </ul>
   </div>
 </nav>
 <!--  recuiter Nav -->
 
-<!-- widget recuitment  -->
-<div class="container-fluid">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-12">
-        <div class="home-ads">
-          <a href="https://learning.vietnamworks.com">
-            <img
-                src="https://res.cloudinary.com/dpcd1ks3v/image/upload/v1652979667/system/image_03.jpg">
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- (end) widget recuitment  -->
-
 <!-- published recuitment -->
 <div class="container-fluid published-recuitment-wrapper">
   <div class="container published-recuitment-content">
     <div class="row">
-      <div class="col-md-8 col-sm-12 col-12 recuitment-inner">
-        <form class="recuitment-form" enctype="multipart/form-data" method="post"
-              th:action="@{/techJob/company/update-info}" th:object="${company}">
-          <div class="accordion" id="accordionExample">
-            <div class="card recuitment-card">
-              <div class="card-header recuitment-card-header" id="heading4">
-                <h2 class="mb-0">
-                  <a aria-controls="collapse4"
-                     aria-expanded="false"
-                     class="btn btn-link btn-block text-left collapsed recuitment-header"
-                     data-target="#collapse4"
-                     data-toggle="collapse" type="button">
-                    Thông tin công ty
-                    <span class="clicksd" id="clickc1_advance4">
-                      <i class="fa fa fa-angle-up"></i>
-                    </span>
-                  </a>
-                </h2>
-              </div>
-              <div aria-labelledby="heading4" class="collapse show" data-parent="#collapse4"
-                   id="collapse4">
-                <div class="card-body recuitment-body">
-                  <div class="form-group row">
-                    <label
-                        class="col-sm-3 d-flex flex-column justify-content-center col-form-label text-right label">Logo
-                      công ty</label>
-                    <div class="col-sm-9 ">
-                      <div class="avatar-upload">
-                        <div class="avatar-edit">
-                          <input accept=".png, .jpg, .jpeg" id="imageUpload" th:field="*{file}"
-                                 type='file'/>
-                          <label for="imageUpload"></label>
-                        </div>
-                        <div class="avatar-preview">
-                          <div id="imagePreview"
-                               th:style="'background-image:url(' + ${company.avatar} + ');'">
-                          </div>
-                        </div>
-                      </div>
+      <div class="col-md-8 col-sm-12 col-12">
+        <div class="job-board-wrap" style="padding: 0 1rem; border-radius: 1rem">
+          <div class="job-group">
+            <div class="job pagi">
+              <div class="job-content"
+                   style="border-bottom: 1px solid black"
+                   th:each="item : ${candidates}">
+                <div class="job-desc" style="width: 100%">
+                  <div class="job-title">
+                    <h4 style="font-size: 16px" th:text="'Người nộp: ' + ${item.user.name}"></h4>
+                    <h4 style="font-size: 16px" th:text="'Công việc: ' + ${item.job.name}"></h4>
+                  </div>
+                  <div style="margin-bottom: 1rem">
+                    <div class="job-inf">
+                      <i aria-hidden="true" class="fa fa-envelope-o pr-2"></i>
+                      <span th:text="${item.user.email}"></span>
+                    </div>
+                    <div class="job-inf">
+                      <i aria-hidden="true" class="fa fa-phone pr-2"></i>
+                      <span th:text="${item.user.phone}"></span>
+                    </div>
+                    <div class="job-inf">
+                      <i aria-hidden="true" class="fa fa-calendar pr-2"></i>
+                      <span
+                          th:text="${#temporals.format(item.createDate, 'dd-MM-yyyy')}"></span>
+                    </div>
+                    <div class="job-inf">
+                      <i aria-hidden="true" class="fa fa-file-pdf-o pr-2"></i>
+                      <a target="_blank" th:href="${item.user.cv.url}"
+                         th:text="${item.user.cv.name}"></a>
                     </div>
                   </div>
-                  <div class="form-group row">
-                    <label class="col-sm-3 col-form-label text-right label">Tên công ty</label>
-                    <div class="col-sm-9">
-                      <input class="form-control" placeholder="Nhập tên công ty" th:field="*{name}"
-                             type="text"/>
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label class="col-sm-3 col-form-label text-right label">Email</label>
-                    <div class="col-sm-9">
-                      <input class="form-control" placeholder="Nhập email" th:field="*{email}"
-                             type="text"/>
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label class="col-sm-3 col-form-label text-right label">Điện thoại</label>
-                    <div class="col-sm-9">
-                      <input class="form-control" placeholder="Nhập số điện thoại"
-                             th:field="*{phone}"
-                             type="text"/>
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label class="col-sm-3 col-form-label text-right label">Tỉnh/ Thành phố</label>
-                    <div class="col-sm-9">
-                      <select class="form-control" data-minimum-results-for-search="Infinity"
-                              id="jobProvince2" th:field="*{city}">
-                        <option
-                            th:each="item : ${T(com.example.techjobs.common.enums.CityConstant).values()}"
-                            th:selected="(${item.name} == *{city})"
-                            th:text="${item.value}" th:value="${item.name}"></option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label class="col-sm-3 col-form-label text-right label">Địa chỉ</label>
-                    <div class="col-sm-9">
-                      <input class="form-control" placeholder="Nhập địa chỉ" th:field="*{address}"
-                             type="text"/>
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label class="col-sm-3 col-form-label text-right label">Giới thiệu về công
-                      ty</label>
-                    <div class="col-sm-9">
-                      <textarea class="form-control" placeholder="Sơ lược về công ty" rows="5"
-                                th:field="*{introduce}" type="text"></textarea>
-                    </div>
+                  <div class="d-flex justify-content-around">
+                    <a class="btn btn-danger"
+                       style="font-size: 14px; font-family: Roboto, sans-serif"
+                       th:href="@{/techJob/user/delete-apply (userId = ${item.user.id}, jobId = ${item.job.id})}"
+                       type="button">
+                      Xóa
+                    </a>
                   </div>
                 </div>
               </div>
             </div>
+
           </div>
-          <div class="rec-submit" style="text-align: center">
-            <button class="btn btn-primary" type="submit">
-              <i class="fa fa-floppy-o pr-2"></i>Lưu hồ sơ
-            </button>
-          </div>
-        </form>
+          <nav aria-label="Page navigation example" th:if="${page} > 1">
+            <ul class="pagination d-flex justify-content-center" style="margin-bottom: 1rem">
+              <li class="page-item" style="background: white">
+                <a aria-label="Previous" class="page-link" onclick="checkBehind()"
+                   th:href="@{/techJob/user/apply-management/page/{pageId}(pageId = ${pageId - 1})}">
+                  <span aria-hidden="true">&laquo;</span>
+                  <span class="sr-only">Previous</span>
+                </a>
+              </li>
+              <li class="page-item d-flex" style="background: white">
+                <a class="page-link" th:each="item : ${stt}"
+                   th:href="@{/techJob/user/apply-management/page/{pageId}(pageId = ${item})}"
+                   th:text="${item}"></a>
+              </li>
+              <li class="page-item" style="background: white">
+                <a aria-label="Next" class="page-link" onclick="checkForward()"
+                   th:href="@{/techJob/user/apply-management/page/{pageId}(pageId = ${pageId + 1})}">
+                  <span aria-hidden="true">&raquo;</span>
+                  <span class="sr-only">Next</span>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
 
       </div>
       <!-- Side bar -->
-      <div class="col-md-4 col-sm-12 col-12">
-        <div class="recuiter-info">
-          <div class="recuiter-info-avt">
-            <img th:src="${company.avatar}">
-          </div>
-          <div class="clearfix list-rec">
-            <h4 th:text="${company.name}"></h4>
-            <ul>
-              <li>
-                <a>Việc làm đang đăng <strong th:text="'(' + ${company.numberJob} + ')'"></strong></a>
-              </li>
-              <li><a>Follower <strong>(450)</strong></a></li>
-            </ul>
+      <form class="col-md-4 col-sm-12 col-12"
+            method="post"
+            style="background: white; padding: 1rem; height: fit-content; border-radius: 1rem; margin-bottom: 20px"
+            th:action="@{/techJob/user/apply-management/page/1}"
+            th:object="${searchRequest}">
+        <div class="paramSearch">
+          <p style="font-weight: bold">Tên tin tuyển dụng: </p>
+          <input class="form-control"
+                 style="font-size: 14px; font-family: Roboto, sans-serif; margin-top: 0.5rem; margin-bottom: 1rem"
+                 th:field="*{name}"
+                 type="text">
+        </div>
+        <div class="paramSearch">
+          <p style="font-weight: bold">Ngày nộp đơn: </p>
+          <div class="d-flex justify-content-around"
+               style="margin-top: 0.5rem; margin-bottom: 1rem">
+            <input class="form-control"
+                   style="font-size: 14px; font-family: Roboto, sans-serif; margin-right: 0.5rem"
+                   th:field="*{createDate.fromDate}"
+                   type="date">
+            <span class="d-flex flex-column justify-content-center">-</span>
+            <input class="form-control"
+                   style="font-size: 14px; font-family: Roboto, sans-serif; margin-left: 0.5rem"
+                   th:field="*{createDate.toDate}"
+                   type="date">
           </div>
         </div>
-      </div>
+        <div style="margin-top: 1rem; text-align: center">
+          <button class="btn btn-info" style="font-size: 14px; font-family: Roboto, sans-serif"
+                  type="submit">Tìm kiếm
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
@@ -356,20 +324,20 @@
 <!-- Read More Plugin -->
 
 <script type="text/javascript">
-  // Avatar upload and preview
-  function readURL(input) {
-    if (input.files && input.files[0]) {
-      var reader = new FileReader();
-      reader.onload = function (e) {
-        $('#imagePreview').css('background-image', 'url(' + e.target.result + ')');
-      }
-      reader.readAsDataURL(input.files[0]);
+  const page = [[${page}]];
+  const pageId = [[${pageId}]];
+
+  function checkForward() {
+    if (pageId + 1 > page) {
+      event.preventDefault();
     }
   }
 
-  $("#imageUpload").change(function () {
-    readURL(this);
-  });
+  function checkBehind() {
+    if (pageId - 1 <= 0) {
+      event.preventDefault();
+    }
+  }
 
   $("#notification").click(function () {
     $("#notification").hide();

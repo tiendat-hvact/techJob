@@ -15,6 +15,7 @@ public class OutputCompanyDTO {
   private String address;
   private String introduce;
   private String verifyCode;
+  private Integer numberJob;
   private String state;
   private String createBy;
   private LocalDate createDate;

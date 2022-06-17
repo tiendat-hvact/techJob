@@ -84,7 +84,7 @@
         <a class="nav-link" href="#">Việc làm đang theo dõi</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Việc làm đã đăng ký</a>
+        <a class="nav-link" href="/techJob/user/apply-management/page/1">Việc làm đã đăng ký</a>
       </li>
     </ul>
   </div>
@@ -144,7 +144,7 @@
                       </div>
                       <div class="avatar-preview">
                         <div id="imagePreview"
-                             th:style="'background-image:url(' + ${avatar} + ');'">
+                             th:style="'background-image:url(' + ${user.avatar} + ');'">
                         </div>
                       </div>
                     </div>
@@ -264,14 +264,17 @@
       <div class="col-md-4 col-sm-12 col-12">
         <div class="recuiter-info">
           <div class="recuiter-info-avt">
-            <img th:src="${avatar}">
+            <img th:src="${user.avatar}">
           </div>
           <div class="clearfix list-rec">
             <h4 th:text="${user.name}"></h4>
             <ul>
               <li><a href="#">Nhà tuyển dụng đang theo dõi <strong>(0)</strong></a></li>
               <li><a href="#">Việc làm đang theo dõi <strong>(450)</strong></a></li>
-              <li><a href="#">Việc làm đã nộp cv <strong>(1150)</strong></a></li>
+              <li>
+                <a href="#">Việc làm đã nộp cv <strong
+                    th:text="'(' + ${numberApply} + ')'"></strong></a>
+              </li>
             </ul>
           </div>
         </div>

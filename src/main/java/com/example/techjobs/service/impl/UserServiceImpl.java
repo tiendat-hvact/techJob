@@ -15,6 +15,7 @@ import com.example.techjobs.dto.inputDTO.InputFileDTO;
 import com.example.techjobs.dto.inputDTO.InputUserDTO;
 import com.example.techjobs.dto.outputDTO.OutputUserDTO;
 import com.example.techjobs.entity.User;
+import com.example.techjobs.repository.ApplyJpaRepository;
 import com.example.techjobs.repository.UserJpaRepository;
 import com.example.techjobs.service.FileService;
 import com.example.techjobs.service.UserService;
@@ -31,27 +32,30 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class UserServiceImpl implements UserService {
 
-  private final Cloudinary cloudinary;
-  private final FileService fileService;
-  private final GenericMapper genericMapper;
+  private final AttributeEncryptor attributeEncryptor;
+  private final ApplyJpaRepository applyJpaRepository;
   private final UserJpaRepository userJpaRepository;
   private final EmailServiceImpl emailService;
-  private final AttributeEncryptor attributeEncryptor;
+  private final GenericMapper genericMapper;
+  private final FileService fileService;
+  private final Cloudinary cloudinary;
 
   @Autowired
   public UserServiceImpl(
-      Cloudinary cloudinary,
-      FileService fileService,
-      GenericMapper genericMapper,
+      AttributeEncryptor attributeEncryptor,
+      ApplyJpaRepository applyJpaRepository,
       UserJpaRepository userJpaRepository,
       EmailServiceImpl emailService,
-      AttributeEncryptor attributeEncryptor) {
-    this.cloudinary = cloudinary;
-    this.fileService = fileService;
-    this.genericMapper = genericMapper;
+      GenericMapper genericMapper,
+      FileService fileService,
+      Cloudinary cloudinary) {
+    this.attributeEncryptor = attributeEncryptor;
+    this.applyJpaRepository = applyJpaRepository;
     this.userJpaRepository = userJpaRepository;
     this.emailService = emailService;
-    this.attributeEncryptor = attributeEncryptor;
+    this.genericMapper = genericMapper;
+    this.fileService = fileService;
+    this.cloudinary = cloudinary;
   }
 
   @Override
@@ -61,6 +65,7 @@ public class UserServiceImpl implements UserService {
     OutputUserDTO outputUserDTO = genericMapper.mapToType(user, OutputUserDTO.class);
     if (outputUserDTO != null) {
       outputUserDTO.setCv(fileService.findByUserId(userId));
+      outputUserDTO.setNumberApply(applyJpaRepository.countNumberApplyByUser(userId));
     }
     return outputUserDTO;
   }

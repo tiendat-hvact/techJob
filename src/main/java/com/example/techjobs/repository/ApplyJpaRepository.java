@@ -10,7 +10,10 @@ import org.springframework.data.repository.query.Param;
 public interface ApplyJpaRepository extends JpaRepository<Apply, ApplyId> {
 
   @Query(value = "SELECT COUNT(a) FROM Apply a WHERE a.job.id = :jobId")
-  Integer countNumberApply(@Param(value = "jobId") Integer jobId);
+  Integer countNumberApplyByJob(@Param(value = "jobId") Integer jobId);
+
+  @Query(value = "SELECT COUNT(a) FROM Apply a WHERE a.user.id = :userId")
+  Integer countNumberApplyByUser(@Param(value = "userId") Integer userId);
 
   List<Apply> findAllByJobId(Integer jobId);
 }

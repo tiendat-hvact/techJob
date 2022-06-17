@@ -16,6 +16,7 @@ public class OutputUserDTO {
   private String address;
   private String verifyCode;
   private OutputFileDTO cv;
+  private Integer numberApply;
   private String state;
   private String createBy;
   private LocalDate createDate;
