@@ -157,10 +157,11 @@
                     <div class="col-sm-9">
                       <select class="form-control" data-minimum-results-for-search="Infinity"
                               id="jobGender"
-                              th:field="*{gender}" type="text">
+                              name="gender" type="text">
                         <option
                             th:each="item : ${T(com.example.techjobs.common.enums.GenderConstant).values()}"
-                            th:selected="${job.gender == item.name}" th:text="${item.value}"
+                            th:selected="${job.gender == item.value}"
+                            th:text="${item.value}"
                             th:value="${item.name}"></option>
                       </select>
                     </div>

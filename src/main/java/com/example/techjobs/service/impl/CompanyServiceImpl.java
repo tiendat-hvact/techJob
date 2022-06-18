@@ -14,17 +14,15 @@ import com.example.techjobs.dto.ResultDTO;
 import com.example.techjobs.dto.inputDTO.InputCompanyDTO;
 import com.example.techjobs.dto.outputDTO.OutputCompanyDTO;
 import com.example.techjobs.entity.Company;
+import com.example.techjobs.entity.Following;
+import com.example.techjobs.entity.User;
 import com.example.techjobs.repository.CompanyJpaRepository;
+import com.example.techjobs.repository.FollowingJpaRepository;
 import com.example.techjobs.repository.JobJpaRepository;
+import com.example.techjobs.repository.UserJpaRepository;
 import com.example.techjobs.service.CompanyService;
-import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -32,31 +30,21 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.util.*;
+
 @Service
+@RequiredArgsConstructor
 public class CompanyServiceImpl implements CompanyService {
 
+  private final FollowingJpaRepository followingJpaRepository;
   private final CompanyJpaRepository companyJpaRepository;
   private final AttributeEncryptor attributeEncryptor;
+  private final UserJpaRepository userJpaRepository;
   private final JobJpaRepository jobJpaRepository;
   private final EmailServiceImpl emailService;
   private final GenericMapper genericMapper;
   private final Cloudinary cloudinary;
-
-  @Autowired
-  public CompanyServiceImpl(
-      CompanyJpaRepository companyJpaRepository,
-      AttributeEncryptor attributeEncryptor,
-      JobJpaRepository jobJpaRepository,
-      EmailServiceImpl emailService,
-      GenericMapper genericMapper,
-      Cloudinary cloudinary) {
-    this.companyJpaRepository = companyJpaRepository;
-    this.attributeEncryptor = attributeEncryptor;
-    this.jobJpaRepository = jobJpaRepository;
-    this.emailService = emailService;
-    this.genericMapper = genericMapper;
-    this.cloudinary = cloudinary;
-  }
 
   @Override
   public OutputCompanyDTO findById(Integer companyId) {
@@ -209,5 +197,62 @@ public class CompanyServiceImpl implements CompanyService {
     company.setState(StateConstant.DELETED.name());
     this.companyJpaRepository.save(company);
     return new ResultDTO<>(null, false, "Xóa company thành công");
+  }
+
+  @Override
+  public void followCompany(Integer idCompany, Integer idUser) {
+    Company company = this.companyJpaRepository.findById(idCompany).orElse(null);
+    if (Objects.isNull(company)) {
+      return;
+    }
+
+    User user = this.userJpaRepository.findById(idUser).orElse(null);
+    if (Objects.isNull(user)) {
+      return;
+    }
+
+
+    Following following = this.followingJpaRepository.findByCompanyIdAndUserid(idCompany, idUser).orElse(null);
+    if (Objects.nonNull(following)) {
+      return;
+    }
+
+    following = new Following();
+    following.setCompany(company);
+    following.setUser(user);
+    following.setCreateDate(LocalDate.now());
+    this.followingJpaRepository.save(following);
+  }
+
+  @Override
+  public void unfollowCompany(Integer idCompany, Integer idUser) {
+    Company company = this.companyJpaRepository.findById(idCompany).orElse(null);
+    if (Objects.isNull(company)) {
+      return;
+    }
+
+    User user = this.userJpaRepository.findById(idUser).orElse(null);
+    if (Objects.isNull(user)) {
+      return;
+    }
+
+
+    Following following = this.followingJpaRepository.findByCompanyIdAndUserid(idCompany, idUser).orElse(null);
+    if (Objects.isNull(following)) {
+      return;
+    }
+    this.followingJpaRepository.deleteById(following.getId());
+  }
+
+  @Override
+  public boolean checkFollowing(Integer idCompany, Integer userId) {
+    Optional<Following> following = this.followingJpaRepository.findByCompanyIdAndUserid(idCompany, userId);
+    return following.isPresent();
+  }
+
+  @Override
+  public List<Company> getCompanyFollowing(Integer userId) {
+    if (!this.userJpaRepository.findById(userId).isPresent()) return new ArrayList<>();
+    return this.companyJpaRepository.getCompanyFollowing(userId);
   }
 }

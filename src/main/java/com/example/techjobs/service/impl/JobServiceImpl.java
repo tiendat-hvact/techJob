@@ -7,18 +7,10 @@ import com.example.techjobs.dto.ResultDTO;
 import com.example.techjobs.dto.SearchRequest;
 import com.example.techjobs.dto.inputDTO.InputJobDTO;
 import com.example.techjobs.dto.outputDTO.OutputJobDTO;
-import com.example.techjobs.entity.Apply;
-import com.example.techjobs.entity.Company;
-import com.example.techjobs.entity.Job;
-import com.example.techjobs.repository.ApplyJpaRepository;
-import com.example.techjobs.repository.CompanyJpaRepository;
-import com.example.techjobs.repository.JobJpaRepository;
-import com.example.techjobs.repository.JobRepository;
+import com.example.techjobs.entity.*;
+import com.example.techjobs.repository.*;
 import com.example.techjobs.service.JobService;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -26,7 +18,14 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
 @Service
+@RequiredArgsConstructor
 public class JobServiceImpl implements JobService {
 
   private final CompanyJpaRepository companyJpaRepository;
@@ -34,19 +33,8 @@ public class JobServiceImpl implements JobService {
   private final JobJpaRepository jopJpaRepository;
   private final JobRepository jobRepository;
   private final GenericMapper genericMapper;
-
-  public JobServiceImpl(
-      CompanyJpaRepository companyJpaRepository,
-      ApplyJpaRepository applyJpaRepository,
-      JobJpaRepository jopJpaRepository,
-      JobRepository jobRepository,
-      GenericMapper genericMapper) {
-    this.companyJpaRepository = companyJpaRepository;
-    this.applyJpaRepository = applyJpaRepository;
-    this.jopJpaRepository = jopJpaRepository;
-    this.jobRepository = jobRepository;
-    this.genericMapper = genericMapper;
-  }
+  private final FollowingJpaRepository followingJpaRepository;
+  private final UserJpaRepository userJpaRepository;
 
   @Override
   public Integer countNumberJob(Integer companyId) {
@@ -152,5 +140,63 @@ public class JobServiceImpl implements JobService {
     job.setState(StateConstant.DELETED.name());
     this.jopJpaRepository.save(job);
     return new ResultDTO<>(null, false, "Xoá tin tuyển dụng thành công");
+  }
+
+  @Override
+  public void followJob(Integer jobId, Integer userId) {
+    Job job = jopJpaRepository.findById(jobId).orElse(null);
+    if (Objects.isNull(job)) {
+      return;
+    }
+
+    User user = this.userJpaRepository.findById(userId).orElse(null);
+    if (Objects.isNull(user)) {
+      return;
+    }
+
+    Following following = this.followingJpaRepository.findByJobIdAndUserid(jobId, userId).orElse(null);
+    if (Objects.nonNull(following)) {
+      return;
+    }
+
+    following = new Following();
+    following.setJob(job);
+    following.setUser(user);
+    following.setCreateDate(LocalDate.now());
+    this.followingJpaRepository.save(following);
+  }
+
+  @Override
+  public void unfollowJob(Integer jobId, Integer userId) {
+
+    Job job = jopJpaRepository.findById(jobId).orElse(null);
+    if (Objects.isNull(job)) {
+      return;
+    }
+
+    User user = this.userJpaRepository.findById(userId).orElse(null);
+    if (Objects.isNull(user)) {
+      return;
+    }
+
+    Following following = this.followingJpaRepository.findByJobIdAndUserid(jobId, userId).orElse(null);
+    if (Objects.isNull(following)) {
+      return;
+    }
+
+    followingJpaRepository.deleteById(following.getId());
+  }
+
+  @Override
+  public boolean checkFollowing(Integer idJob, Integer idUser) {
+    Optional<Following> byJobIdAndUserid = this.followingJpaRepository.findByJobIdAndUserid(idJob, idUser);
+    return byJobIdAndUserid.isPresent();
+  }
+
+  @Override
+  public List<Job> getJobFollowing(Integer userId) {
+    User user = this.userJpaRepository.findById(userId).orElse(null);
+    if (Objects.isNull(user)) return new ArrayList<>();
+    return this.jopJpaRepository.getJobFollowing(userId);
   }
 }

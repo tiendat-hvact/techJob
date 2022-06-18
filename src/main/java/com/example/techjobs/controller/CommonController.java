@@ -332,6 +332,7 @@ public class CommonController {
     }
     checkCookie(userId, adminId, companyId, model);
     model.addAttribute("job", job);
+    model.addAttribute("isFollowing", this.jobService.checkFollowing(jobId, userId));
     return "job-info";
   }
 
@@ -348,6 +349,7 @@ public class CommonController {
     }
     checkCookie(userId, adminId, companyId, model);
     model.addAttribute("company", company);
+    model.addAttribute("isFollowing", this.companyService.checkFollowing(id, userId));
     return "introduce-company";
   }
 
