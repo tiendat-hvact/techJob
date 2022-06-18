@@ -34,4 +34,12 @@ public interface JobService {
 
   /** Xóa tin tuyển dụng */
   ResultDTO<Job> delete(Integer jobId);
+
+  void followJob(Integer jobId, Integer userId);
+
+  void unfollowJob(Integer jobId, Integer userId);
+
+  boolean checkFollowing(Integer idJob, Integer idUser);
+
+  List<Job> getJobFollowing(Integer userId);
 }

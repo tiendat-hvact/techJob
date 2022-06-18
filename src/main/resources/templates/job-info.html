@@ -132,10 +132,24 @@
           </div>
         </div>
         <div class="col-md-3 col-sm-12 col-12" th:if="${type == 'user'}">
-          <div class="jd-header-wrap-right">
+          <div class="jd-header-wrap-right flex-column">
             <div class="jd-center">
               <a class="btn btn-primary btn-apply"
                  th:href="@{/techJob/user/apply-job/{id} (id = ${job.id})}">Nộp đơn</a>
+            </div>
+            <div class="jd-center">
+              <a class="btn btn-primary" style="padding: 0.6rem 2.5rem;"
+                 th:if="${!isFollowing}"
+                 th:href="@{/techJob/job/follow/{id}?returnUrl={returnUrl}(id = ${job.id}, returnUrl=${#request.requestURI})}"
+                 th:text="'Theo dõi'"
+              />
+
+              <a class="btn btn-danger" style="padding: 0.6rem 2.5rem;"
+                 th:if="${isFollowing}"
+                 th:href="@{/techJob/job/unfollow/{id}?returnUrl={returnUrl}(id = ${job.id}, returnUrl=${#request.requestURI})}"
+                 th:text="'Bỏ theo dõi'"
+              />
+
             </div>
           </div>
         </div>

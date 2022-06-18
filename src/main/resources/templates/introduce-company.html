@@ -127,6 +127,18 @@
             </div>
           </div>
         </div>
+        <div class="col-md-3 col-sm-12 col-12 d-flex align-items-center">
+          <a class="btn btn-primary"
+             th:if="${!isFollowing}"
+             th:href="@{/techJob/company/follow/{id}?returnUrl={returnUrl}(id = ${company.id}, returnUrl=${#request.requestURI})}"
+             th:text="'Theo dõi'"
+          />
+          <a class="btn btn-danger"
+             th:if="${isFollowing}"
+             th:href="@{/techJob/company/unfollow/{id}?returnUrl={returnUrl}(id = ${company.id}, returnUrl=${#request.requestURI}) }"
+             th:text="'Bỏ theo dõi'"
+          />
+        </div>
       </div>
     </div>
   </div>

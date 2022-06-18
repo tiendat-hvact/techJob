@@ -36,4 +36,7 @@ public interface JobJpaRepository extends JpaRepository<Job, Integer> {
   List<Job> findAllByTypeId(Integer typeId);
 
   List<Job> findAllByStateNot(String stateNot);
+
+  @Query(nativeQuery = true, value = "SELECT jobs.* FROM jobs JOIN followings ON jobs.id = followings.job_id WHERE followings.user_id = ?1 AND jobs.state <> 'DELETED'")
+  List<Job> getJobFollowing(Integer userId);
 }

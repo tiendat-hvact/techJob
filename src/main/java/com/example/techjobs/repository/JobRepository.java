@@ -7,5 +7,5 @@ import org.springframework.data.domain.Pageable;
 
 public interface JobRepository {
 
-  Page<Job> getPageableJobByCondition(SearchRequest searchRequest, Pageable pageable);
+    Page<Job> getPageableJobByCondition(SearchRequest searchRequest, Pageable pageable);
 }
