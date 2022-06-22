@@ -137,7 +137,7 @@
               <a class="btn btn-primary btn-apply"
                  th:href="@{/techJob/user/apply-job/{id} (id = ${job.id})}">Nộp đơn</a>
             </div>
-            <div class="jd-center">
+            <div class="jd-center" th:if="${userCookie != 0}">
               <a class="btn btn-primary" style="padding: 0.6rem 2.5rem;"
                  th:if="${!isFollowing}"
                  th:href="@{/techJob/job/follow/{id}?returnUrl={returnUrl}(id = ${job.id}, returnUrl=${#request.requestURI})}"
